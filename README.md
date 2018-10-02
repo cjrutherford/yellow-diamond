@@ -57,6 +57,4 @@ Please ensure that there are entries in your .env file for each of these items.
 
 There needs to be a `logs` folder created prior to running. 
 
-## File Structure
 
-Database models are defined in the Models folder. Express Routes are defined in the Routes folder. 
