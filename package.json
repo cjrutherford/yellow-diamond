@@ -1,0 +1,23 @@
+{
+  "name": "NodeBook",
+  "version": "1.0.0",
+  "description": "NodeBook is a simple stub project that is the basis of a blog. It includes local authentication to protect posting, and currently supports only text based posts from a text area. The front end is very simple, and is intended to be a basic starting point for a blog interface.",
+  "main": "index.js",
+  "author": "Chris Rutherford",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "bunyan": "^1.8.12",
+    "bunyan-format": "^0.2.1",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.3.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
+  }
+}
