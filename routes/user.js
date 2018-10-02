@@ -1,8 +1,9 @@
-const router = require("express").Rotuer();
+const router = require("express").Router();
 const user = require("../models/user");
 const bcrypt = require("bcryptjs");
 const log = require("../logger");
-const secret = "kajs;igh aoiwn;oiqn;owvba;oubebfsinva;n";
+require('dotenv').config();
+const secret = process.env.SECRET || 'thisneedstob3ch@ng3D';
 
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
@@ -15,16 +16,16 @@ router.post("/register", (req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({ emailAddress: req.body.emailAddress }).then(user => {
     if (user) {
-      errors.email = "Email Already Exists";
+      errors.emailAddress = "Email Already Exists";
       return res.status(400).json(errors);
     } else {
       const newUser = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         userName: req.body.userName,
-        email: req.body.email,
+        emailAddress: req.body.emailAddress,
         password: req.body.password
       });
       bcrypt.genSalt(10, (err, salt) => {
@@ -89,3 +90,5 @@ router.get(
       .catch(err => res.status(400).json(err));
   }
 );
+
+module.exports = router;

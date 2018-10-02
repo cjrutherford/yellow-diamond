@@ -1,8 +1,8 @@
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const log = require("./logger");
-
+require('dotenv').config();
 const fs = require("fs");
-
+const secret = process.env.SECRET || 'thisneedstob3ch@ng3D';
 const mongoose = require("mongoose");
 
 const User = require("./models/user");
