@@ -11,7 +11,7 @@ Simple Node Express Mongoose Passport starter kit.
 - **Default Express Configuration** - Basic implementation of express complete with body/cookie parsing, logging, and MongoDB connections via Mongoose
 - **Default Mongoose Configuration** - Implemented via Environment Vairables.
 - **Default Passport configuration** - Login and Register has been implemented and tested working. Client is delivered a JWT to authenticate against the app.
-- **Customer Bunyan Logger** - To use the customer logging included with the starter kit, please import the `logger.js` file into your own files. It is recommended to assign it to a `const log` so that log calls will work as `log.info()` `log.error()` etc. This logger creates a rotating file log in addition to logging to the console. ( A Logs directory should be created prior to running the app )
+- **Custom Bunyan Logger** - To use the customer logging included with the starter kit, please import the `logger.js` file into your own files. It is recommended to assign it to a `const log` so that log calls will work as `log.info()` `log.error()` etc. This logger creates a rotating file log in addition to logging to the console. ( A Logs directory should be created prior to running the app )
 
 ## Supplied Routes
 
