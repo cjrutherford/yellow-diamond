@@ -42,6 +42,28 @@ router.post("/register", (req, res) => {
   });
 });
 
+router.post('/reset', (req, res) => {
+  const {errors, isValid } = require('../validation/user').resetUser(req.body);
+
+  if(!isValid){
+    return res.status(400).json(error);
+  }
+
+  const email = req.body.email;
+
+  User.findOne({email}).then(user => {
+    if(!user){
+      errors.email = 'No Account Found.';
+      return res.status(404).json(errors);
+    }
+    /* TODO://
+    *  1. Generate a unique ID,
+    *  2. Merge Link to Reset Password route.
+    *  3. Send Email to email with password link.
+    */
+  })
+});
+
 //ROTUER POST LOGIN
 router.post("/login", (req, res) => {
   const { errors, isValid } = require("../validation/user").loginUser(req.body);

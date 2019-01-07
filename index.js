@@ -12,10 +12,12 @@ const port = process.env.PORT || 3000;
 const dbPort = process.env.DB_PORT || 27017;
 const dbUrl = process.env.DB_URL || "localhost";
 const dbCollection = process.env.DB_COLLECTION || "nodebook";
+const dbUser = process.env.DB_USER || 'user';
+const dbPass = process.env.DB_PASS || '$0m3th1ng$T3rr1blyR0t3n!@#';
 ////Need to add database user and collection information for the connection.
 mongoose.set('useCreateIndex', true);
 mongoose
-  .connect(`mongodb://${dbUrl}:${dbPort}/${dbCollection}`, {useNewUrlParser: true})
+  .connect(`mongodb://${dbUser}:${dbPass}@${dbUrl}:${dbPort}/${dbCollection}`, {useNewUrlParser: true})
   .then(() => log.info(`Connected Successfully to MongoDB`))
   .catch(err => log.error(err));
 
