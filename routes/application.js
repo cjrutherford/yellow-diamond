@@ -64,6 +64,7 @@ app.post('/appverify', (req, res) => {
 	/**
 	 * 1. check to see if the token is valid.
 	 * 2. if Y, return the key
+	 * 3. if No, return an error
 	 */
 });
 
