@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const { Application, AppToken } = require('../models/application');
 const bcrypt = require('bcryptjs');
+const log = require('../logger');
 require('dotenv').config();
 const secret = process.env.SECRET || '$3r10uslyCh@ng3Th1$!';
+const uniq = require('uniqid');
 
 const passport = require('passport');
 const jwt = require('jsonwebtoken');

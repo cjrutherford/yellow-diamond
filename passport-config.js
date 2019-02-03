@@ -1,11 +1,12 @@
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const log = require("./logger");
-require('dotenv').config();
+require("dotenv").config();
 const fs = require("fs");
-const secret = process.env.SECRET || 'thisneedstob3ch@ng3D';
 const mongoose = require("mongoose");
 
 const User = require("./models/user");
+
+const secret = require("./util/genKeys").checkForPrivateKey();
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
