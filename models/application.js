@@ -19,4 +19,3 @@ module.exports = {
 	Application: mongoose.model('Application', ApplicationSchema),
 	AppToken: mongoose.model('AppToken', AppTokenSchema),
 };
-Í;
