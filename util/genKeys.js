@@ -17,17 +17,14 @@ const generateKeys = () => {
 		: log.info(
 			`New Private Key Generated: ${diffHell.getPrivateKey('base64')}`
 		  );
-	let keyPair = new KeyPair({
+	return new KeyPair({
 		public: diffHell.getPublicKey('base64'),
 		private: diffHell.getPrivateKey('base64'),
 		timeOfChange: Date.now(),
-	});
-
-	return keyPair
+	})
 		.save()
 		.then(key => {
 			log.info(`New Public Key Saved to DB: ${key.public}`);
-			console.dir(key);
 			return key;
 		})
 		.catch(err => log.error(err));

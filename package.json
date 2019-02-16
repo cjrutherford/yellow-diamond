@@ -25,6 +25,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "promise-sequential": "^1.1.1",
     "uniqid": "^5.0.3",
     "validator": "^10.8.0"
   }

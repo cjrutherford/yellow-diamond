@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const { Application, AppToken } = require('../models/application');
+const A = require('../models/application');
+const { Application, AppToken } = A;
 const bcrypt = require('bcryptjs');
 const log = require('../logger');
 require('dotenv').config();
