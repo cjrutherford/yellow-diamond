@@ -3,43 +3,58 @@ const log = require("../logger");
 const prime_length = 60;
 
 const fs = require('fs');
+const promisify = require('util').promisify;
+
+const stat = promisify(fs.stat);
+const mkdir = promisify(fs.mkdir);
+const writeFile = promisify(fs.writeFile);
+const readFile = promisify(fs.readFile);
 
 const mongoose = require("mongoose");
 const KeyPair = require("../models/keyPair");
+
+const ensureFolder = require('./ensureFolder');
 
 const diffHell = crypto.createDiffieHellman(prime_length);
 
 const debug = true;
 
-const ensureKeys = async () => {
-	const privateStatus = await fs.stat('../keys/private.key');
-	const pubStatus = await fs.stat('../keys/public.key');
-	if((privateStatus.indexOf('Error') > -1) && (pubStatus.indexOf('Error')> -1)){
-		console.log('Error occurred looking for key files. Generating keys.');
-		const isKeyFolder = await isKeyFolderCreated();
-		if(!isKeyFolder){
-			await fs.mkdir('../keys');
-		}
-		diffHell.generateKeys("base64");
-		const public = diffHell.getPublicKey("base64");
-		const private = diffHell.getPrivateKey('base64');
-
-		await fs.writeFile('../keys/public.key', public);
-		await fs.writeFile('../keys/private.key', private);
-		return {public, private};
-	} else {
-		const public = await fs.readFile('../keys/public.key');
-		const private = await fs.readFile('../keys/private.key');
-		return {public, private};
-	}
+const ensurePublicKey = () => {
+	return new Promise( (resolve, reject) => {
+		ensureFolder('../keys').then(async() => {
+			if(!fs.statSync('../keys/public.key')){
+				diffHell.generateKeys("base64");
+				const public = diffHell.getPublicKey("base64");
+				const private = diffHell.getPrivateKey('base64');
+		
+				await writeFile('../keys/public.key', public);
+				await writeFile('../keys/private.key', private);
+				resolve(public);
+			} else {
+				const public = await readFile('../keys/public.key');
+				resolve(public);
+			}
+		}).catch(err => reject(err));
+	});
 };
 
-const isKeyFolderCreated = async () => {
-	const folderStat = fs.stat('../keys');
-	if(folderStat.indexOf('Error')> -1){
-		return false;
-	}
-	return true;
+const ensurePrivateKey = () => {
+	return new Promise( (resolve, reject) => {
+		ensureFolder('../keys').then(async() => {
+			if(!fs.statSync('../keys/private.key')){
+				diffHell.generateKeys('base64');
+				const public = diffHell.getPublicKey('base64');
+				const private = diffHell.getPrivateKey('base64');
+
+				await writeFile('../keys/public.key', public);
+				await writeFile('../keys/private.key', private);
+				resolve(private);
+			} else {
+				const private = await readFile('../keys/private.key');
+				resolve(private);
+			}
+		}).catch(err => reject(err));
+	});
 };
 
 const generateKeys = () => {
@@ -79,7 +94,6 @@ const getLastTimeStamp = () => {
   return KeyPair.findOne({}, "timeOfChange").sort("-timeOfChange");
 };
 const checkForPrivateKey = () => {
-  le;
 };
 
 module.exports = {
@@ -88,5 +102,6 @@ module.exports = {
   getLastPublicKey,
   getLastTimeStamp,
   checkForPrivateKey,
-	ensureKeys
+	ensurePublicKey,
+	ensurePrivateKey
 };

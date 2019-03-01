@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const log = require("../logger");
 require('dotenv').config();
 const secret = process.env.SECRET || 'thisneedstob3ch@ng3D';
+const KeyPair = require('../models/keyPair');
 
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
@@ -70,30 +71,38 @@ router.post("/login", (req, res) => {
   if (!isValid) {
     return res.status(400).json(err);
   }
-  const email = req.body.email;
-  const password = req.body.password;
-
-  User.findOne({ email }).then(user => {
-    if (!user) {
-      errors.email = "No Account Found";
-      return res.status(404).json(errors);
+  KeyPair.findOne({}, "timeOfChange").sort("-timeOfChange").then(keys => {
+    if(!keys){
+      log.error('Keys Not Found Please contact Administrator');
+      res.status(500).json({Error: 'Keys Not Found', message: 'Keys Not Found Please contact Administrator'});
     }
-
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch) {
-        const payload = {
-          id: user._id,
-          name: user.userName
-        };
-        jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
-          if (err)
-            res.status(500).json({ error: "Error signing token", raw: err });
-          res.json({ success: true, token: `Bearer ${token}` });
-        });
-      } else {
-        errors.password = "Password is incorrect";
-        res.status(400).json(errors);
+    const email = req.body.email;
+    const password = req.body.password;
+    const secret = keys.private;
+  
+    User.findOne({ email }).then(user => {
+      if (!user) {
+        errors.email = "No Account Found";
+        return res.status(404).json(errors);
       }
+  
+      bcrypt.compare(password, user.password).then(isMatch => {
+        if (isMatch) {
+          const payload = {
+            id: user._id,
+            name: user.userName
+          };
+          jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
+            if (err)
+              res.status(500).json({ error: "Error signing token", raw: err });
+              const refresh = uuid.v4();
+            res.json({ success: true, token: `Bearer ${token}` });
+          });
+        } else {
+          errors.password = "Password is incorrect";
+          res.status(400).json(errors);
+        }
+      });
     });
   });
 });

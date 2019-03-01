@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const Schema = mongoose.Schema;
+
 
 const KeyPairSchema = new Schema({
   public: { type: String, required: true },
@@ -7,4 +8,4 @@ const KeyPairSchema = new Schema({
   timeOfChange: { type: Date, required: true }
 });
 
-module.exports = KeyPair = model("KeyPair", KeyPairSchema);
+module.exports = KeyPair = mongoose.model("KeyPair", KeyPairSchema);
