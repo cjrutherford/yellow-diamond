@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 const User = require("./models/user");
 
-const secret = require("./util/genKeys").checkForPrivateKey();
+
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -14,6 +14,7 @@ const opts = {
 };
 
 module.exports = passport => {
+  const secret = require('./util/genKeys').ensureKeys();
   passport.use(
     new Strategy(opts, (payload, done) => {
       User.findById(payload.id)
