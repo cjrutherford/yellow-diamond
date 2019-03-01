@@ -1,5 +1,9 @@
 const fs  = require('fs');
 
+const promisify = require('util').promisify;
+
+const mkdir = promisify(fs.mkdir);
+
 module.exports = ensureFolder = (path, mask) => {
   return new Promise((resolve, reject) => {
     if(typeof mask === 'undefined'){
@@ -12,6 +16,6 @@ module.exports = ensureFolder = (path, mask) => {
         } else {
             resolve(null);
         }
-    })
+    });
   });
 };
