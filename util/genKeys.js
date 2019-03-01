@@ -19,6 +19,34 @@ const diffHell = crypto.createDiffieHellman(prime_length);
 
 const debug = true;
 
+const ensureKeys = () => {
+	return new Promise((resolve, reject) => {
+		ensureFolder('../keys').then(() => {
+			/**
+			 * Ensure that both the private and public keys
+			 * are created, and if not create them both. 
+			 * Never generate just a single key.
+			 */
+			try{
+				if((!fs.existsSync('../keys/private.key')) && (!fs.existsSync('../keys/public.key'))){
+					diffHell.generateKeys('base64');
+					const public = diffHell.getPublicKey('base64');
+					const private = diffHell.getPrivateKey('base64');
+					fs.writeFileSync('../keys/public.key', public);
+					fs.writeFileSync('../keys/private.key', private);
+					resolve({private, public});
+				} else {
+					const public = fs.readFileSync('../keys/public.key');
+					const private = fs.readFileSync('../keys/private.key');
+					resolve({private, public});
+				}
+			} catch (e) {
+				reject(e);
+			}
+		});
+	});
+}
+
 const ensurePublicKey = () => {
 	return new Promise( (resolve, reject) => {
 		ensureFolder('../keys').then(async() => {
@@ -103,5 +131,6 @@ module.exports = {
   getLastTimeStamp,
   checkForPrivateKey,
 	ensurePublicKey,
-	ensurePrivateKey
+	ensurePrivateKey,
+	ensureKeys
 };
