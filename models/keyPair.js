@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const KeyPairSchema = new Schema({
-	public: { type: String, required: true },
-	private: { type: String, required: true },
-	timeOfChange: { type: Date, required: true },
+  public: { type: String, required: true },
+  private: { type: String, required: true },
+  timeOfChange: { type: Date, required: true }
 });
 
-module.exports = KeyPair = mongoose.model('KeyPair', KeyPairSchema);
+module.exports = KeyPair = model("KeyPair", KeyPairSchema);

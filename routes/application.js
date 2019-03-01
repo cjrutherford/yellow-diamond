@@ -52,14 +52,7 @@ router.post('/login', (req, res) => {
 			} else {
 				/**
 				 * 1. Check if the app password and has compares.
-				 * 2. if Y create access and refresh tokens
-				 *    and return to application.
-				 * 		2.1 create a JWT with expiry of 3 days.
-				 * 		2.2 create a unique string with uniq.
-				 * 		2.3 Save both to database for retrieval.
-				 * 		2.4 Set function timeout to set access to expired.
-				 * 		2.5 compact token payload
-				 * 		2.6 Return to user.
+				 * 2. if Y create token and return to application.
 				 * 3. if N return errors to the client.
 				 */
 			}
@@ -72,7 +65,6 @@ app.post('/appverify', (req, res) => {
 	/**
 	 * 1. check to see if the token is valid.
 	 * 2. if Y, return the key
-	 * 		2.1
 	 * 3. if No, return an error
 	 */
 });
