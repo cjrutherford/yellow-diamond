@@ -5,6 +5,7 @@ const log = require('../logger');
 require('dotenv').config();
 const secret = process.env.SECRET || 'thisneedstob3ch@ng3D';
 const KeyPair = require('../models/keyPair');
+const ResetLink = require('../models/resetLink');
 
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
@@ -61,10 +62,30 @@ module.exports = private => {
 				return res.status(404).json(errors);
 			}
 			/* TODO://
-			 *  1. Generate a unique ID,
+			 *  1. Generate a unique ID, (link.id)
 			 *  2. Merge Link to Reset Password route.
 			 *  3. Send Email to email with password link.
 			 */
+			new ResetLink({ email }).save().then(link => {
+				if (!link) {
+					log.error(
+						'Unable to save reset link to database, please check the connection'
+					);
+					res
+						.status(500)
+						.json({
+							type: 'Error',
+							message:
+								'Unable to save reset link to database, please check the connection',
+						});
+				}
+				/**
+				 * This should reflect the url of the running host.
+				 * Research how to grab the base URL...
+				 */
+				const resetReferral = `http://localhost:3201/users/reset/${link.id}`;
+				queueEmail(resetReferral, link.email);
+			});
 		});
 	});
 
@@ -76,49 +97,33 @@ module.exports = private => {
 		if (!isValid) {
 			return res.status(400).json(err);
 		}
-		KeyPair.findOne({}, 'timeOfChange')
-			.sort('-timeOfChange')
-			.then(keys => {
-				if (!keys) {
-					log.error('Keys Not Found Please contact Administrator');
-					res
-						.status(500)
-						.json({
-							Error: 'Keys Not Found',
-							message: 'Keys Not Found Please contact Administrator',
-						});
-				}
-				const email = req.body.email;
-				const password = req.body.password;
-				const secret = keys.private;
+		const email = req.body.email;
+		const password = req.body.password;
 
-				User.findOne({ email }).then(user => {
-					if (!user) {
-						errors.email = 'No Account Found';
-						return res.status(404).json(errors);
-					}
+		User.findOne({ email }).then(user => {
+			if (!user) {
+				errors.email = 'No Account Found';
+				return res.status(404).json(errors);
+			}
 
-					bcrypt.compare(password, user.password).then(isMatch => {
-						if (isMatch) {
-							const payload = {
-								id: user._id,
-								name: user.userName,
-							};
-							jwt.sign(payload, private, { expiresIn: 36000 }, (err, token) => {
-								if (err)
-									res
-										.status(500)
-										.json({ error: 'Error signing token', raw: err });
-								const refresh = uuid.v4();
-								res.json({ success: true, token: `Bearer ${token}` });
-							});
-						} else {
-							errors.password = 'Password is incorrect';
-							res.status(400).json(errors);
-						}
+			bcrypt.compare(password, user.password).then(isMatch => {
+				if (isMatch) {
+					const payload = {
+						id: user._id,
+						name: user.userName,
+					};
+					jwt.sign(payload, private, { expiresIn: 36000 }, (err, token) => {
+						if (err)
+							res.status(500).json({ error: 'Error signing token', raw: err });
+						const refresh = uuid.v4();
+						res.json({ success: true, token: `Bearer ${token}` });
 					});
-				});
+				} else {
+					errors.password = 'Password is incorrect';
+					res.status(400).json(errors);
+				}
 			});
+		});
 	});
 
 	router.get(
