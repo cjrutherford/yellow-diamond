@@ -1,5 +1,5 @@
-const crypto = require("crypto");
-const log = require("../logger");
+const crypto = require('crypto');
+const log = require('../logger');
 const prime_length = 60;
 
 const fs = require('fs');
@@ -10,8 +10,8 @@ const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 
-const mongoose = require("mongoose");
-const KeyPair = require("../models/keyPair");
+const mongoose = require('mongoose');
+const KeyPair = require('../models/keyPair');
 
 const ensureFolder = require('./ensureFolder');
 
@@ -21,116 +21,120 @@ const debug = true;
 
 const ensureKeys = () => {
 	return new Promise((resolve, reject) => {
-		ensureFolder('../keys').then(() => {
+		ensureFolder('./keys').then(() => {
 			/**
 			 * Ensure that both the private and public keys
-			 * are created, and if not create them both. 
+			 * are created, and if not create them both.
 			 * Never generate just a single key.
 			 */
-			try{
-				if((!fs.existsSync('../keys/private.key')) && (!fs.existsSync('../keys/public.key'))){
+			try {
+				if (
+					!fs.existsSync('./keys/private.key') &&
+					!fs.existsSync('./keys/public.key')
+				) {
 					diffHell.generateKeys('base64');
 					const public = diffHell.getPublicKey('base64');
 					const private = diffHell.getPrivateKey('base64');
-					fs.writeFileSync('../keys/public.key', public);
-					fs.writeFileSync('../keys/private.key', private);
-					resolve({private, public});
+					fs.writeFileSync('./keys/public.key', public);
+					fs.writeFileSync('./keys/private.key', private);
+					resolve({ private, public });
 				} else {
-					const public = fs.readFileSync('../keys/public.key');
-					const private = fs.readFileSync('../keys/private.key');
-					resolve({private, public});
+					const public = fs.readFileSync('./keys/public.key');
+					const private = fs.readFileSync('./keys/private.key');
+					resolve({ private, public });
 				}
 			} catch (e) {
 				reject(e);
 			}
 		});
 	});
-}
+};
 
 const ensurePublicKey = () => {
-	return new Promise( (resolve, reject) => {
-		ensureFolder('../keys').then(async() => {
-			if(!fs.statSync('../keys/public.key')){
-				diffHell.generateKeys("base64");
-				const public = diffHell.getPublicKey("base64");
-				const private = diffHell.getPrivateKey('base64');
-		
-				await writeFile('../keys/public.key', public);
-				await writeFile('../keys/private.key', private);
-				resolve(public);
-			} else {
-				const public = await readFile('../keys/public.key');
-				resolve(public);
-			}
-		}).catch(err => reject(err));
+	return new Promise((resolve, reject) => {
+		ensureFolder('../keys')
+			.then(async () => {
+				if (!fs.statSync('../keys/public.key')) {
+					diffHell.generateKeys('base64');
+					const public = diffHell.getPublicKey('base64');
+					const private = diffHell.getPrivateKey('base64');
+
+					await writeFile('../keys/public.key', public);
+					await writeFile('../keys/private.key', private);
+					resolve(public);
+				} else {
+					const public = await readFile('../keys/public.key');
+					resolve(public);
+				}
+			})
+			.catch(err => reject(err));
 	});
 };
 
 const ensurePrivateKey = () => {
-	return new Promise( (resolve, reject) => {
-		ensureFolder('../keys').then(async() => {
-			if(!fs.statSync('../keys/private.key')){
-				diffHell.generateKeys('base64');
-				const public = diffHell.getPublicKey('base64');
-				const private = diffHell.getPrivateKey('base64');
+	return new Promise((resolve, reject) => {
+		ensureFolder('../keys')
+			.then(async () => {
+				if (!fs.statSync('../keys/private.key')) {
+					diffHell.generateKeys('base64');
+					const public = diffHell.getPublicKey('base64');
+					const private = diffHell.getPrivateKey('base64');
 
-				await writeFile('../keys/public.key', public);
-				await writeFile('../keys/private.key', private);
-				resolve(private);
-			} else {
-				const private = await readFile('../keys/private.key');
-				resolve(private);
-			}
-		}).catch(err => reject(err));
+					await writeFile('../keys/public.key', public);
+					await writeFile('../keys/private.key', private);
+					resolve(private);
+				} else {
+					const private = await readFile('../keys/private.key');
+					resolve(private);
+				}
+			})
+			.catch(err => reject(err));
 	});
 };
 
 const generateKeys = () => {
-  diffHell.generateKeys("base64");
-  log.info(`New Public Key Generated: ${diffHell.getPublicKey("base64")}`);
-  debug
-    ? log.info(`New Private Key Generated: XXXX`)
-    : log.info(
-        `New Private Key Generated: ${diffHell.getPrivateKey("base64")}`
-      );
-  let keyPair = new KeyPair({
-    public: diffHell.getPublicKey("base64"),
-    private: diffHell.getPrivateKey("base64"),
-    timeOfChange: new Date().now()
-  });
+	diffHell.generateKeys('base64');
+	log.info(`New Public Key Generated: ${diffHell.getPublicKey('base64')}`);
+	debug
+		? log.info('New Private Key Generated: XXXX')
+		: log.info(
+			`New Private Key Generated: ${diffHell.getPrivateKey('base64')}`
+		  );
+	let keyPair = new KeyPair({
+		public: diffHell.getPublicKey('base64'),
+		private: diffHell.getPrivateKey('base64'),
+		timeOfChange: new Date().now(),
+	});
 
-  return keyPair
-    .save()
-    .then(key => {
-      log.info(`New Public Key Saved to DB: ${key.public}`);
-      return key;
-    })
-    .catch(err => log.error(err));
+	return keyPair
+		.save()
+		.then(key => {
+			log.info(`New Public Key Saved to DB: ${key.public}`);
+			return key;
+		})
+		.catch(err => log.error(err));
 };
 
-
-
 const getLastPublicKey = () => {
-  return KeyPair.findOne({}, "public timeOfChange").sort("-timeOfChange");
+	return KeyPair.findOne({}, 'public timeOfChange').sort('-timeOfChange');
 };
 
 const getLastPrivateKey = () => {
-  return KeyPair.findOne({}, "private timeOfChange").sort("-timeOfChange");
+	return KeyPair.findOne({}, 'private timeOfChange').sort('-timeOfChange');
 };
 
 const getLastTimeStamp = () => {
-  return KeyPair.findOne({}, "timeOfChange").sort("-timeOfChange");
+	return KeyPair.findOne({}, 'timeOfChange').sort('-timeOfChange');
 };
-const checkForPrivateKey = () => {
-};
+const checkForPrivateKey = () => {};
 
 module.exports = {
-  generateKeys,
-  getLastPrivateKey,
-  getLastPublicKey,
-  getLastTimeStamp,
-  checkForPrivateKey,
+	generateKeys,
+	getLastPrivateKey,
+	getLastPublicKey,
+	getLastTimeStamp,
+	checkForPrivateKey,
 	ensurePublicKey,
 	ensurePrivateKey,
-	ensureKeys
+	ensureKeys,
 };

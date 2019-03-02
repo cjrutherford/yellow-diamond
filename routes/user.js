@@ -71,13 +71,11 @@ module.exports = private => {
 					log.error(
 						'Unable to save reset link to database, please check the connection'
 					);
-					res
-						.status(500)
-						.json({
-							type: 'Error',
-							message:
-								'Unable to save reset link to database, please check the connection',
-						});
+					res.status(500).json({
+						type: 'Error',
+						message:
+							'Unable to save reset link to database, please check the connection',
+					});
 				}
 				/**
 				 * This should reflect the url of the running host.
@@ -85,6 +83,34 @@ module.exports = private => {
 				 */
 				const resetReferral = `http://localhost:3201/users/reset/${link.id}`;
 				queueEmail(resetReferral, link.email);
+				res.status(200).redirect('/reset/success');
+			});
+		});
+	});
+
+	router.get('/reset/success', (req, res) => {
+		res.json({ success: true });
+	});
+
+	router.post('/reset/:linkId', (rea, res) => {
+		const linkId = req.param.linkId;
+		const pw1 = req.body.password;
+		const pw2 = req.body.password2;
+		/**
+		 * Take the Link Id, determine if it's valid
+		 * Then accept the new password, verify they match,
+		 * then salt/hash the password to save to the database.
+		 * */
+
+		ResetLink.findOne({ linkId }).then(link => {
+			if (!link) {
+				res.status(400).json({ error: 'link not found.' });
+			} else if (!link.stillValid) {
+				res.status(400).json({ error: 'link is no longer valid.' });
+			}
+
+			User.findOne({ email: link.email }).then(user => {
+				if (!user) res.status(400).json({ error: 'user not found' });
 			});
 		});
 	});
