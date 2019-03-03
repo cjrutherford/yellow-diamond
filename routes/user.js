@@ -54,11 +54,11 @@ module.exports = private => {
 			return res.status(400).json(error);
 		}
 
-		const email = req.body.email;
+		const emailAddress = req.body.emailAddress;
 
-		User.findOne({ email }).then(user => {
+		User.findOne({ emailAddress }).then(user => {
 			if (!user) {
-				errors.email = 'No Account Found.';
+				errors.emailAddress = 'No Account Found.';
 				return res.status(404).json(errors);
 			}
 			/* TODO://
@@ -66,7 +66,7 @@ module.exports = private => {
 			 *  2. Merge Link to Reset Password route.
 			 *  3. Send Email to email with password link.
 			 */
-			new ResetLink({ email }).save().then(link => {
+			new ResetLink({ emailAddress }).save().then(link => {
 				if (!link) {
 					log.error(
 						'Unable to save reset link to database, please check the connection'
@@ -111,6 +111,22 @@ module.exports = private => {
 
 			User.findOne({ email: link.email }).then(user => {
 				if (!user) res.status(400).json({ error: 'user not found' });
+				if (pw1 === pw2) {
+					bcrypt.genSalt(10, (err, salt) => {
+						bcrypt.hash(pw1, salt, (err, hash) => {
+							user.password = hash;
+							user
+								.save()
+								.then(user => res.json(user))
+								.catch(err => {
+									log.error({ resetPasswordError: err });
+									res.status(500).json(err);
+								});
+						});
+					});
+				} else {
+					res.status(400).json({ error: 'Passwords do not match...' });
+				}
 			});
 		});
 	});
@@ -121,7 +137,7 @@ module.exports = private => {
 			req.body
 		);
 		if (!isValid) {
-			return res.status(400).json(err);
+			return res.status(400).json(errors);
 		}
 		const email = req.body.email;
 		const password = req.body.password;
@@ -141,7 +157,7 @@ module.exports = private => {
 					jwt.sign(payload, private, { expiresIn: 36000 }, (err, token) => {
 						if (err)
 							res.status(500).json({ error: 'Error signing token', raw: err });
-						const refresh = uuid.v4();
+						// const refresh = uuid.v4();
 						res.json({ success: true, token: `Bearer ${token}` });
 					});
 				} else {

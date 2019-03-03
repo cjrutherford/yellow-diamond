@@ -1,7 +1,7 @@
 {
-	"name": "NodeBook",
+	"name": "Yellow Diamond",
 	"version": "1.0.0",
-	"description": "NodeBook is a simple stub project that is the basis of a blog. It includes local authentication to protect posting, and currently supports only text based posts from a text area. The front end is very simple, and is intended to be a basic starting point for a blog interface.",
+	"description": "Yellow diamond intends to be a drop in authentication gateway for other applications.",
 	"main": "index.js",
 	"author": "Chris Rutherford",
 	"license": "MIT",
