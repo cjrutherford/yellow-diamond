@@ -1,4 +1,5 @@
 const mailer = require('nodemailer');
+const log = require('../logger');
 
 module.exports = queueEmail = async (referralLink, email) => {
 	let account = await mailer.createTestAccount();
@@ -24,5 +25,5 @@ module.exports = queueEmail = async (referralLink, email) => {
 	};
 
 	let info = await transporter.sendMail(mailOptions);
-	console.log(`Message Sent ${info.messageId}`);
+	log.info(`Message Sent ${info.messageId}`);
 };
