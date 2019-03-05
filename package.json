@@ -1,5 +1,5 @@
 {
-	"name": "Yellow Diamond",
+	"name": "YellowDiamond",
 	"version": "1.0.0",
 	"description": "Yellow diamond intends to be a drop in authentication gateway for other applications.",
 	"main": "index.js",

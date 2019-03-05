@@ -48,5 +48,17 @@ module.exports = {
       errors.password = "Password Field is Required";
     }
     return { errors, isValid: isEmpty(errors) };
-  }
+  },
+  resetUser: data => {
+    const errors = {};
+    data.emailAddress = !isEmpty(data.emailAddress)? data.emailAddress : "";
+    if(validator.isEmpty(data.emailAddress)){
+      errors.emailAddress = 'Email Address is Empty. Please supply an email address.';
+    }
+    if(!validator.isEmail(data.emailAddress)){
+      errors.emailAddress = 'Email Address format is invalid. Please supply an email address.';
+    }
+
+    return {errors, isValid: isEmpty(errors)};
+  },
 };

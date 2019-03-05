@@ -1,35 +1,34 @@
-const { Strategy, ExtractJwt } = require("passport-jwt");
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const log = require("./logger");
 require("dotenv").config();
 const KeyPair = require('./models/keyPair');
 const User = require("./models/user");
 
-module.exports = passport => {
- require('./util/genKeys').ensurePublicKey().then(key => {
+module.exports = (passport, key) => {
   const opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
     secretOrKey: key
   };
-  // new KeyPair({
-  //   public: keys.public,
-  //   private: keys.private,
-  //   timeOfChange: new Date().now()
-  // }).save().then(key => log.info(`Key pair ${key.public} successfully saved.`)).catch(err => log.error(err));
    passport.use(
-     new Strategy(opts, (payload, done) => {
+     new JwtStrategy(opts, (payload, done) => {
+       log.info({message: 'verifying the token', payload});
        User.findById(payload.id)
          .then(user => {
            if (user) {
              return done(null, {
-               id: user.id,
-               name: user.name,
-               email: user.email
+               id: user._id,
+               name: user.userName,
+               email: user.emailAddress
              });
            }
+           log.info(payload);
            return done(null, false);
          })
-         .catch(err => log.error(err));
+         .catch(err => {
+           log.error(err)
+           return done('Unauthorized', false, payload);
+          });
      })
    );
- });
 };

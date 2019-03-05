@@ -10,6 +10,8 @@ const ResetLink = require('../models/resetLink');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
+const queueEmail = require('../util/emailProcessing');
+
 module.exports = private => {
 	//ROUTE POST REGISTER
 	router.post('/register', (req, res) => {
@@ -66,7 +68,7 @@ module.exports = private => {
 			 *  2. Merge Link to Reset Password route.
 			 *  3. Send Email to email with password link.
 			 */
-			new ResetLink({ emailAddress }).save().then(link => {
+			new ResetLink({ email: emailAddress }).save().then(link => {
 				if (!link) {
 					log.error(
 						'Unable to save reset link to database, please check the connection'
@@ -83,16 +85,12 @@ module.exports = private => {
 				 */
 				const resetReferral = `http://localhost:3201/users/reset/${link.id}`;
 				queueEmail(resetReferral, link.email);
-				res.status(200).redirect('/reset/success');
+				res.status(200).json({success: true});
 			});
 		});
 	});
 
-	router.get('/reset/success', (req, res) => {
-		res.json({ success: true });
-	});
-
-	router.post('/reset/:linkId', (rea, res) => {
+	router.post('/reset/:linkId', (req, res) => {
 		const linkId = req.param.linkId;
 		const pw1 = req.body.password;
 		const pw2 = req.body.password2;
@@ -109,7 +107,7 @@ module.exports = private => {
 				res.status(400).json({ error: 'link is no longer valid.' });
 			}
 
-			User.findOne({ email: link.email }).then(user => {
+			User.findOne({ emailAddress: link.email }).then(user => {
 				if (!user) res.status(400).json({ error: 'user not found' });
 				if (pw1 === pw2) {
 					bcrypt.genSalt(10, (err, salt) => {
@@ -117,7 +115,7 @@ module.exports = private => {
 							user.password = hash;
 							user
 								.save()
-								.then(user => res.json(user))
+								.then(user => res.json(user)) //probably need to wrap this in a response object, and delete the hash prior to returning to the user.
 								.catch(err => {
 									log.error({ resetPasswordError: err });
 									res.status(500).json(err);
@@ -153,8 +151,10 @@ module.exports = private => {
 					const payload = {
 						id: user._id,
 						name: user.userName,
+						email: user.emailAddress
 					};
-					jwt.sign(payload, private, { expiresIn: 36000 }, (err, token) => {
+					log.info(payload);
+					jwt.sign(payload, private, { expiresIn: 30000000 }, (err, token) => {
 						if (err)
 							res.status(500).json({ error: 'Error signing token', raw: err });
 						// const refresh = uuid.v4();
