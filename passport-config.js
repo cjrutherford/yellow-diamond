@@ -8,7 +8,8 @@ const User = require("./models/user");
 module.exports = (passport, key) => {
   const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
-    secretOrKey: key
+    secretOrKey: key,
+    algorithm: ["RS256"]
   };
    passport.use(
      new JwtStrategy(opts, (payload, done) => {

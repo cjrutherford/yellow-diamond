@@ -115,7 +115,10 @@ module.exports = private => {
 							user.password = hash;
 							user
 								.save()
-								.then(user => res.json(user)) //probably need to wrap this in a response object, and delete the hash prior to returning to the user.
+								.then(user => {
+									delete user.password;
+									res.json(user)
+								}) //probably need to wrap this in a response object, and delete the hash prior to returning to the user.
 								.catch(err => {
 									log.error({ resetPasswordError: err });
 									res.status(500).json(err);
@@ -154,7 +157,12 @@ module.exports = private => {
 						email: user.emailAddress
 					};
 					log.info(payload);
-					jwt.sign(payload, private, { expiresIn: 30000000 }, (err, token) => {
+					jwt.sign(payload, private, { 
+						expiresIn: 30000000,
+						issuer: 'Garnet Labs, DBA',
+						subject: user.emailAddress,
+						algorithm: 'RS256'
+					 }, (err, token) => {
 						if (err)
 							res.status(500).json({ error: 'Error signing token', raw: err });
 						// const refresh = uuid.v4();
@@ -172,11 +180,13 @@ module.exports = private => {
 		'/current',
 		passport.authenticate('jwt', { session: false }),
 		(req, res) => {
-			User.findOne({ email })
+			log.info(req.user);
+			User.findOne({emailAddress: req.user.email})
 				.then(user => {
 					if (!user) {
 						res.status(404).json({ error: 'User Not Found.' });
 					}
+					delete user.password;
 					res.json(user);
 				})
 				.catch(err => res.status(400).json(err));

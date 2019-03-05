@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const log = require('../logger');
 const prime_length = 60;
+const keypair = require('keypair');
 
 const fs = require('fs');
 const promisify = require('util').promisify;
@@ -33,17 +34,18 @@ const ensureKeys = () => {
 					!fs.existsSync('./keys/public.key')
 				) {
 					log.info('Keys do not exist. Creating them.');
-					diffHell.generateKeys('base64');
-					const public = diffHell.getPublicKey('base64');
-					const private = diffHell.getPrivateKey('base64');
-					fs.writeFileSync('./keys/public.key', public);
-					fs.writeFileSync('./keys/private.key', private);
+					const pair = keypair();
+					// diffHell.generateKeys('base64');
+					// const public = diffHell.getPublicKey('base64');
+					// const private = diffHell.getPrivateKey('base64');
+					fs.writeFileSync('./keys/public.key', pair.public);
+					fs.writeFileSync('./keys/private.key', pair.private);
 					log.info('keys created and being served to the app.');
-					resolve({ private, public });
+					resolve({ private: pair.private,public: pair.public });
 				} else {
 					log.info('keys are already generated. Loading from key files.');
-					const public = fs.readFileSync('./keys/public.key');
-					const private = fs.readFileSync('./keys/private.key');
+					const public = fs.readFileSync('./keys/public.key', 'utf8');
+					const private = fs.readFileSync('./keys/private.key', 'utf8');
 					log.info('keys loaded from files. Serving to the rest of the app.');
 					resolve({ private, public });
 				}
