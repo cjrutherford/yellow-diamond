@@ -68,26 +68,29 @@ module.exports = private => {
 			 *  2. Merge Link to Reset Password route.
 			 *  3. Send Email to email with password link.
 			 */
-			new ResetLink({ email: emailAddress }).save().then(link => {
-				if (!link) {
-					log.error(
-						'Unable to save reset link to database, please check the connection'
-					);
-					res.status(500).json({
-						type: 'Error',
-						message:
-							'Unable to save reset link to database, please check the connection',
-					});
-				}
-				/**
-				 * This should reflect the url of the running host.
-				 * Research how to grab the base URL...
-				 */
-				const resetReferral = `http://localhost:3201/users/reset/${link.id}`;
-				queueEmail(resetReferral, link.email);
-				res.status(200).json({success: true});
-			});
-		});
+			ResetLink.findOne({email: emailAddress}).then(l => {
+				if(l.stillValid) res.status(400).json({error: 'Link Already Exists. Please Use that one. Only one can be valid at the time'});
+				new ResetLink({ email: emailAddress }).save().then(link => {
+					if (!link) {
+						log.error(
+							'Unable to save reset link to database, please check the connection'
+						);
+						res.status(500).json({
+							type: 'Error',
+							message:
+								'Unable to save reset link to database, please check the connection',
+						});
+					}
+					/**
+					 * This should reflect the url of the running host.
+					 * Research how to grab the base URL...
+					 */
+					const resetReferral = `http://localhost:3201/users/reset/${link.id}`;
+					queueEmail(resetReferral, link.email);
+					res.status(200).json({success: true});
+				}).catch(err => res.status(500).json({error: err, message: 'issue creating new reset link'}));
+			}).catch(err => res.status(500).json({error: err, message: 'issue looking for existing links.'}));
+		}).catch(err => res.status(500).json({error: err, message: 'error finding user.'}));
 	});
 
 	router.post('/reset/:linkId', (req, res) => {

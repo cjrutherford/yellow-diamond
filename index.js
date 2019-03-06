@@ -14,6 +14,7 @@ const dbUrl = process.env.DB_URL || 'localhost';
 const dbCollection = process.env.DB_COLLECTION || 'nodebook';
 const dbUser = process.env.DB_USER || 'user';
 const dbPass = process.env.DB_PASS || '$0m3th1ng$T3rr1blyR0t3n!@#';
+const appSecret = process.env.APP_SECRET || '018347691!#$^@#%^@ajosr haguqhfwiasbd';
 ////Need to add database user and collection information for the connection.
 mongoose.set('useCreateIndex', true);
 mongoose
@@ -28,7 +29,7 @@ app.use(passport.initialize());
 const keys = require('./util/genKeys')
 	.ensureKeys()
 	.then(keys => {
-		require('./passport-config')(passport, keys.public);
+		require('./passport-config')(passport, keys.public, appSecret);
 
 		app.use(cp());
 		app.use(bp.json());
@@ -45,6 +46,7 @@ const keys = require('./util/genKeys')
 		});
 
 		app.use('/users', require('./routes/user')(keys.private));
+		app.use('/application', passport.authenticate('jwt', {session: false}), require('./routes/application')(appSecret));
 
 		app.listen(port, err => {
 			if (err) log.error(err);

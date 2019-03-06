@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const A = require('../models/application');
-const { Application, AppToken } = A;
+const { Application, AppToken } = require('../models/application');
 const bcrypt = require('bcryptjs');
 const log = require('../logger');
 require('dotenv').config();
@@ -10,79 +10,104 @@ const uniq = require('uniqid');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-//ROUTE FOR CREATING NEW APPLICATION.
-router.post('/', (req, res) => {
-	const { errors, isValid } = require('../validation/application').registerApp(
-		req.body
-	);
-	if (!isValid) return res.status(400).json(errors);
 
-	Application.findOne({ appName: req.body.appName }).then(app => {
-		if (app) {
-			errors.appName = 'Application with that name already exists';
-			return res.status(400).json(errors);
-		} else {
-			const newApp = new Application(Object.assign({}, req.body));
-			bcrypt.gensalt(10, (err, salt) => {
-				bcrypt.hash(newApp.appPass, salt, (err, hash) => {
-					if (err) throw err;
-					newApp.appPass = hash;
-					newApp
-						.save()
-						.then(app => res.json(app))
-						.err(err => res.status(400).json(err));
-				});
-			});
-		}
-	});
-});
+module.exports = (secret) => {
 
-//route to login an application
-router.post('/login', (req, res) => {
-	const { errors, isValid } = require('../validation/application').loginApp(
-		req.body
-	);
-	if (!isValid) return res.status(400).json(errors);
-
-	Applicaiton.findOne({ appName: req.body.appName })
-		.then(app => {
-			if (!app) {
-				errors.appName = 'Application does not exist in this context.';
+	//ROUTE FOR CREATING NEW APPLICATION.
+	router.post('/', (req, res) => {
+		const { errors, isValid } = require('../validation/application').registerApp(
+			req.body
+		);
+		if (!isValid) return res.status(400).json(errors);
+	
+		Application.findOne({ appName: req.body.appName }).then(app => {
+			if (app) {
+				errors.appName = 'Application with that name already exists';
 				return res.status(400).json(errors);
 			} else {
-				/**
-				 * 1. Check if the app password and has compares.
-				 * 2. if Y create token and return to application.
-				 * 3. if N return errors to the client.
-				 */
+				const newApp = new Application(Object.assign({}, req.body));
+				bcrypt.gensalt(10, (err, salt) => {
+					bcrypt.hash(newApp.appPass, salt, (err, hash) => {
+						if (err) throw err;
+						newApp.appPass = hash;
+						newApp
+							.save()
+							.then(app => res.json(app))
+							.err(err => res.status(400).json(err));
+					});
+				});
 			}
-		})
-		.catch(err => res.status(400).json(err));
-});
+		});
+	});
+	
+	//route to login an application
+	router.post('/login', (req, res) => {
+		const { errors, isValid } = require('../validation/application').loginApp(
+			req.body
+		);
+		if (!isValid) return res.status(400).json(errors);
+	
+		Applicaiton.findOne({ appName: req.body.appName })
+			.then(app => {
+				if (!app) {
+					errors.appName = 'Application does not exist in this context.';
+					return res.status(400).json(errors);
+				} else {
+					/**
+					 * 1. Check if the app password and has compares.
+					 * 2. if Y create token and return to application.
+					 * 3. if N return errors to the client.
+					 */
+					bcrypt.compare(req.body.appPass, app.appPass).then(isMatch => {
+						if(isMatch){
+							const payload = {
+								id: app.id,
+								name: app.appName,
+								owner: app.appOwner,
+							};
+							jwt.sign(payload, secret, {
+								expiresIn: '30d',
+								issuer: 'Garnet Labs, DBA',
+							}, (err, token) => {
+								if(err) res.status(500).json({error: err, message: 'Issue signing token'});
+								res.json({success: true, token: `Bearer ${token}`});
+							});
+						} else{
+							errors.password = 'Password is incorrect';
+							res.status(400).json(errors);
+						}
+					});
+				}
+			})
+			.catch(err => res.status(400).json(err));
+	});
+	
+	// //route to verify token and retrieve secretOrKey
+	// app.post('/appverify', (req, res) => {
+	// 	/**
+	// 	 * 1. check to see if the token is valid.
+	// 	 * 2. if Y, return the key
+	// 	 * 3. if No, return an error
+	// 	 */
+	// });
+	
+	// //route to take in refresh token, and get new token
+	// app.post('/refresh', (req, res) => {});
+	
+	// //route to logout application
+	
+	// app.post('/logout', (req, res) => {});
+	
+	//Route to get an Application
+	router.get('/', (req, res) => {});
+	
+	//ROUTE For Updating an APPLICATION
+	
+	router.patch('/:appId', (req, res) => {});
+	
+	//route to delete an application
+	
+	router.delete('/:appId', (req, res) => {});
 
-//route to verify token and retrieve secretOrKey
-app.post('/appverify', (req, res) => {
-	/**
-	 * 1. check to see if the token is valid.
-	 * 2. if Y, return the key
-	 * 3. if No, return an error
-	 */
-});
-
-//route to take in refresh token, and get new token
-app.post('/refresh', (req, res) => {});
-
-//route to logout application
-
-app.post('/logout', (req, res) => {});
-
-//Route to get an Application
-router.get('/', (req, res) => {});
-
-//ROUTE For Updating an APPLICATION
-
-router.patch('/:appId', (req, res) => {});
-
-//route to delete an application
-
-router.delete('/:appId', (req, res) => {});
+	return router;
+}

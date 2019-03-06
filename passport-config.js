@@ -3,16 +3,17 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const log = require("./logger");
 require("dotenv").config();
 const KeyPair = require('./models/keyPair');
+const Application = require('./models/application').Application;
 const User = require("./models/user");
 
-module.exports = (passport, key) => {
-  const opts = {
+module.exports = (passport, key, appSecret) => {
+  const userOpts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
     secretOrKey: key,
     algorithm: ["RS256"]
   };
    passport.use(
-     new JwtStrategy(opts, (payload, done) => {
+     new JwtStrategy(userOpts, (payload, done) => {
        log.info({message: 'verifying the token', payload});
        User.findById(payload.id)
          .then(user => {
@@ -32,4 +33,21 @@ module.exports = (passport, key) => {
           });
      })
    );
+    
+   const appOpts = {
+     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
+     secretOrKey: appSecret
+   }
+   passport.use('app-jwt', new JwtStrategy(appOpts, (payload, done) => {
+    Application.findById(payload.id).then(app => {
+      if(app){
+        return done(null, {
+          id: app._id,
+          appName: app.appName,
+          users: app.users
+        });
+      }
+      return done(null, false);
+    }).catch(err => done('Unauthorized', false, err));
+   }));
 };
