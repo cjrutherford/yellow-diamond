@@ -46,7 +46,7 @@ const keys = require('./util/genKeys')
 		});
 
 		app.use('/users', require('./routes/user')(keys.private));
-		app.use('/application', passport.authenticate('jwt', {session: false}), require('./routes/application')(appSecret));
+		app.use('/application', require('./routes/application')(appSecret, keys.public));
 
 		app.listen(port, err => {
 			if (err) log.error(err);

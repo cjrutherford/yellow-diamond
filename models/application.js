@@ -5,7 +5,6 @@ const ApplicationSchema = new Schema({
 	appName: { type: String, required: true },
 	appOwner: { type: Schema.Types.ObjectId, required: true },
 	users: [{type: Schema.Types.ObjectId, ref: 'User'}],
-	applicationKey: { type: String, requried: true },
 	revokedTokens: [{ type: Schema.Types.ObjectId, ref: 'AppToken' }],
 });
 

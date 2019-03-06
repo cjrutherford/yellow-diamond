@@ -11,43 +11,56 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
 
-module.exports = (secret) => {
+module.exports = (secret, public) => {
 
 	//ROUTE FOR CREATING NEW APPLICATION.
-	router.post('/', (req, res) => {
+	//tested working, and documented in postman
+	router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
 		const { errors, isValid } = require('../validation/application').registerApp(
 			req.body
 		);
 		if (!isValid) return res.status(400).json(errors);
-	
+		const name = req.body.appName;
+		const password = req.body.appPass;
+		const password2 = req.body.appPass2;
 		Application.findOne({ appName: req.body.appName }).then(app => {
 			if (app) {
 				errors.appName = 'Application with that name already exists';
 				return res.status(400).json(errors);
 			} else {
-				const newApp = new Application(Object.assign({}, req.body));
-				bcrypt.gensalt(10, (err, salt) => {
-					bcrypt.hash(newApp.appPass, salt, (err, hash) => {
-						if (err) throw err;
-						newApp.appPass = hash;
-						newApp
-							.save()
-							.then(app => res.json(app))
-							.err(err => res.status(400).json(err));
+				if(password === password2){
+					const newApp = new Application({
+						appPass: password,
+						appName: name,
+						appOwner: req.user.id
 					});
-				});
+					bcrypt.genSalt(10, (err, salt) => {
+						bcrypt.hash(newApp.appPass, salt, (err, hash) => {
+							if (err) throw err;
+							newApp.appPass = hash;
+							newApp
+								.save()
+								.then(app => res.json(app))
+								.catch(err => res.status(400).json(err));
+						});
+					});
+				} else {
+					res.status(400).json({error: 'passwords do not match'});
+				}
 			}
-		});
+		}).catch(err => res.status(500).json({error: err, message: 'issue with finding application in database.'}));
 	});
 	
 	//route to login an application
+	//tested working
+	//documented in postman
 	router.post('/login', (req, res) => {
 		const { errors, isValid } = require('../validation/application').loginApp(
 			req.body
 		);
 		if (!isValid) return res.status(400).json(errors);
 	
-		Applicaiton.findOne({ appName: req.body.appName })
+		Application.findOne({ appName: req.body.appName })
 			.then(app => {
 				if (!app) {
 					errors.appName = 'Application does not exist in this context.';
@@ -82,32 +95,27 @@ module.exports = (secret) => {
 			.catch(err => res.status(400).json(err));
 	});
 	
-	// //route to verify token and retrieve secretOrKey
-	// app.post('/appverify', (req, res) => {
-	// 	/**
-	// 	 * 1. check to see if the token is valid.
-	// 	 * 2. if Y, return the key
-	// 	 * 3. if No, return an error
-	// 	 */
-	// });
-	
-	// //route to take in refresh token, and get new token
-	// app.post('/refresh', (req, res) => {});
-	
-	// //route to logout application
-	
-	// app.post('/logout', (req, res) => {});
+	router.get('/key', passport.authenticate('app-jwt', {session: false}), (req,res) => {
+		res.json({key: public});
+	});
 	
 	//Route to get an Application
-	router.get('/', (req, res) => {});
+	//tested working correctly
+	//documented in postman
+	router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
+		Application.find({appOwner: req.user.id}).then(apps => {
+			if(!apps) res.status(404).json({error: 'No Apps from this user Found'});
+			res.json(apps);
+		}).catch(err => res.status(500).json({error: err, message: 'issue finding apps in the database.'}));
+	});
 	
 	//ROUTE For Updating an APPLICATION
 	
-	router.patch('/:appId', (req, res) => {});
+	router.patch('/:appId', passport.authenticate('jwt', {session: false}), (req, res) => {});
 	
 	//route to delete an application
 	
-	router.delete('/:appId', (req, res) => {});
+	router.delete('/:appId', passport.authenticate('jwt', {session: false}), (req, res) => {});
 
 	return router;
 }
