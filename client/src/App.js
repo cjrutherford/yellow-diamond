@@ -5,9 +5,24 @@ import ResetUser from "./components/reset";
 import Header from "./components/header";
 import "./App.css";
 
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+//eslint-disable-next-line
+import * as Bootstrap from 'bootstrap';
+//eslint-disable-next-line
+import * as $ from 'jquery';
+//eslint-disable-next-line
+import * as Popper from 'popper.js';
+
+
 class App extends Component {
 	render() {
-		return <Header />;
+		return (
+			<React.Fragment>
+				<Header />
+			</React.Fragment>
+
+		);
 	}
 }
 

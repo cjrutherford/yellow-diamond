@@ -103,7 +103,7 @@ module.exports = (secret, public) => {
 	//tested working correctly
 	//documented in postman
 	router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
-		Application.find({appOwner: req.user.id}).then(apps => {
+		Application.find({appOwner: req.user.id}, {appPass: 0}).then(apps => {
 			if(!apps) res.status(404).json({error: 'No Apps from this user Found'});
 			res.json(apps);
 		}).catch(err => res.status(500).json({error: err, message: 'issue finding apps in the database.'}));

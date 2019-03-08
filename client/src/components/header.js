@@ -7,7 +7,7 @@ class Header extends Component {
 			headerBG: {
 				backgroundImage: 'url("blob.gif")',
 				width: "100vw",
-				height: "13vh",
+				height: "7vh",
 				backgroundPosition: "center center",
 				backgroundSize: "cover",
 				margin: "0",
@@ -15,8 +15,8 @@ class Header extends Component {
 			},
 			headerFilter: {
 				background: "rgba(100, 100, 100, 0.8)",
-				width: "98vw",
-				height: "10vh",
+				width: "100vw",
+				height: "7vh",
 				display: "flex",
 				flexDirection: "row",
 				alignItems: "center",

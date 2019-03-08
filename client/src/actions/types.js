@@ -1,0 +1,10 @@
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const SET_CURRENT_APP = 'SET_CURRENT_APP';
+export const SET_USER_LIST = 'SET_USER_LIST';
+export const SET_APP_LIST = 'SET_APP_LIST';
+export const SET_MESSAGE = 'SET_MESSAGE';
+export const ACK_MESSAGE = 'ACK_MESSAGE';
+export const ADD_USER = 'ADD_USER';
+export const ADD_APP = 'ADD_APP';
+export const REMOVE_USER = 'REMOVE_USER';
+export const REMOVE_APP = 'REMOVE_APP';
