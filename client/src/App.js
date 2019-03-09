@@ -1,9 +1,13 @@
-import React, { Component } from "react";
-import Login from "./components/login";
-import Register from "./components/register";
-import ResetUser from "./components/reset";
-import Header from "./components/header";
-import "./App.css";
+import React, { Component } from 'react';
+import Login from './components/login';
+import Register from './components/register';
+import ResetUser from './components/reset';
+import Header from './components/header';
+import Routing from './components/routing';
+import { Provider } from 'react-redux';
+import store from './store';
+
+import './App.css';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
@@ -14,14 +18,12 @@ import * as $ from 'jquery';
 //eslint-disable-next-line
 import * as Popper from 'popper.js';
 
-
 class App extends Component {
 	render() {
 		return (
-			<React.Fragment>
+			<Provider store={store}>
 				<Header />
-			</React.Fragment>
-
+			</Provider>
 		);
 	}
 }
