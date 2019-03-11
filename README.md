@@ -1,8 +1,8 @@
-# NEMP-Starter-Kit
-Simple Node Express Mongoose Passport starter kit.
+# Yellow Diamond
+A Drop-in Authentication Gateway for use with the Garnet Labs suite of tools and applications.
 
 ## Installation
-1. Clone this Repo `git clone https://github.com/garnetlabsnyc/nemp-starter-kit <your-project-name>`
+1. Clone this Repo `git clone https://github.com/cjrutherford/yellow-diamond <your-project-name>`
 2. `yarn install` or `npm -i`
 3. Have Fun!
 

@@ -1,34 +1,20 @@
-import { SET_MESSAGE, ACK_MESSAGE } from '../actions/types';
+import {SET_CURRENT_USER} from '../actions/types';
 
-/**
- * Message Schema:
- * {
- *  id: number
- *  text: 'text of the message'
- *  ack: (default false)
- * }
- */
+import isEmpty from '../utils/is-empty';
 
 const initState = {
-	apps: [],
-	selectedApp: {},
+    
 };
 
-export default (state = initState, { type, payload }) => {
-	switch (type) {
-	case SET_MESSAGE:
-		return {
-			...state,
-			messages: state.messages.push(payload),
-		};
-	case ACK_MESSAGE:
-		return {
-			...state,
-			messages: state.messages.map((content, i) => {
-				if (content.id === payload.id) content.ack = !content.ack;
-			}),
-		};
-	default:
-		return state;
-	}
-};
+export default (state = initState, {type, payload}) => {
+    switch(type){
+        case SET_CURRENT_USER:
+            return{
+                ...state,
+                user: payload,
+                isAuthenticated: !isEmpty(payload)
+            }
+        default: 
+            return state;
+    }
+}
