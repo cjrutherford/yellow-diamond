@@ -12,7 +12,7 @@ module.exports = {
       errors.userName = "Name must be between 2 and 30 characters";
     }
     if (validator.isEmpty(data.userName)) {
-      errors.userName = "Name Field is Required";
+      errors.userName = "User Name Field is Required";
     }
     if (validator.isEmpty(data.emailAddress)) {
       errors.emailAddress = "Email Field is Required";

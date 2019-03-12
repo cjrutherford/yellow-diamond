@@ -5,6 +5,10 @@ const bp = require('body-parser');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cors = require('cors');
+const corsOptions = {
+	origin: '*',
+}
 
 const app = express();
 
@@ -31,6 +35,7 @@ const keys = require('./util/genKeys')
 	.then(keys => {
 		require('./passport-config')(passport, keys.public, appSecret);
 
+		app.use(cors(corsOptions));
 		app.use(cp());
 		app.use(bp.json());
 		app.use(bp.urlencoded({ extended: true }));

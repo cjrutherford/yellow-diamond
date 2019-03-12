@@ -23,9 +23,10 @@ export default (state = initState, { type, payload }) => {
 	case ACK_MESSAGE:
 		return {
 			...state,
-			messages: state.messages.map((content, i) => {
-				if (content.id === payload.id) content.ack = !content.ack;
-			}),
+			messages: () => {
+				return state.messages.map((content, i) => {
+				if (content.id === payload.id) return content.ack = !content.ack;
+			})},
 		};
 	default:
 		return state;

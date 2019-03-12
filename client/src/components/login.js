@@ -1,6 +1,26 @@
 import React, { Component } from "react";
+import { Input, Form, FormGroup, Label, Button } from 'reactstrap';
+import {connect} from 'react-redux';
+
+import {loginUser} from '../actions/auth';
 
 class Login extends Component {
+	constructor(props){
+		super(props);
+		this.state = {
+			login: '',
+			password: '',
+		};
+		this.onChange = this.onChange.bind(this);
+	}
+
+	onChange(e) {
+		e.preventDefault();
+		this.setState({
+			[e.target.name]: e.target.value,
+		});
+	}
+
 	render() {
 		return (
 			<React.Fragment>
@@ -9,19 +29,29 @@ class Login extends Component {
 				</div>
 				<h2 className="hotpink centerIt ">Login</h2>
 				<div className="loginForm">
-					<form id="loginPage">
+					<Form id="loginPage">
 						<div className="loginBox ">
-							Username: <input type="text" name="login" />
-							<br />
-							Password: <input type="password" name="password" />
-							<br />
+							<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
+								<Label for="login">Username:</Label>
+								<Input type="text" name="login" onChange={this.onChange} />
+							</FormGroup>
+							<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
+								<Label>Password:</Label>
+								<Input type="password" name="password" onChange={this.onChange} />
+							</FormGroup>
 						</div>
-						<button className="loginButtons">Submit</button>
-						<button className="loginButtons">Forgot Password</button>
-					</form>
+						<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
+							<Button className="loginButtons">Submit</Button>
+							<Button className="loginButtons">Forgot Password</Button>
+						</FormGroup>
+					</Form>
 				</div>
 			</React.Fragment>
 		);
 	}
 }
-export default Login;
+
+const mapState = state => ({});
+
+
+export default connect(mapState, {loginUser})(Login);

@@ -1,6 +1,10 @@
-import React, { Component /*Fragment*/ } from 'react';
+import React, { Component, Fragment } from 'react';
 import YellowDiamond from '../assets/Yellow Diamond.gif';
+import { connect } from 'react-redux';
+import { logoutUser } from '../actions/auth';
+import {PropTypes} from 'prop-types';
 
+import { Link } from 'react-router-dom';
 import {
 	Collapse,
 	Nav,
@@ -8,7 +12,7 @@ import {
 	NavbarToggler,
 	NavbarBrand,
 	NavItem,
-	NavLink,
+	Button,
 } from 'reactstrap';
 
 class Header extends Component {
@@ -54,6 +58,7 @@ class Header extends Component {
 			navOpen: false,
 		};
 		this.toggle = this.toggle.bind(this);
+		this.onLogoutClick = this.onLogoutClick.bind(this);
 	}
 
 	toggle() {
@@ -62,7 +67,39 @@ class Header extends Component {
 		});
 	}
 
+	onLogoutClick(e) {
+		e.preventDefault();
+		this.props.logoutUser();
+	}
+
 	render() {
+		const { user, isAuthenticated } = this.props.auth;
+		const guestLinks = (
+			<Fragment>
+				<NavItem>
+					<Link to="/apps">Manage Apps</Link>
+				</NavItem>
+				<NavItem>
+					<Link to="/users">Manage Users</Link>
+				</NavItem>
+				<NavItem>
+					<Button clasName='nav-link' onClick={this.onLogoutClick}>LogOut {user.userName}</Button>
+				</NavItem>
+			</Fragment>
+		);
+		const authLinks = (
+			<Fragment>
+				<NavItem>
+					<Link to='/login'>Login</Link>
+				</NavItem>
+				<NavItem>
+					<Link to="/register">Register</Link>
+				</NavItem>
+				<NavItem>
+					<Link to="/reset">Recover Account</Link>
+				</NavItem>
+			</Fragment>
+		)
 		return (
 			<Navbar style={this.state.headerBG}>
 				<div style={this.state.headerFilter}>
@@ -79,15 +116,7 @@ class Header extends Component {
 					<Collapse isOpen={this.state.navOpen}>
 						<Nav>
 							<div style={this.state.menuStyles}>
-								<NavItem>
-									<NavLink href="/login">Login</NavLink>
-								</NavItem>
-								<NavItem>
-									<NavLink href="/regiser">Register</NavLink>
-								</NavItem>
-								<NavItem>
-									<NavLink href="/reset">Recover Account</NavLink>
-								</NavItem>
+								{isAuthenticated ? guestLinks : authLinks}
 							</div>
 						</Nav>
 					</Collapse>
@@ -95,5 +124,15 @@ class Header extends Component {
 			</Navbar>
 		);
 	}
-}
-export default Header;
+};
+
+Header.propTypes = {
+	logoutUser: PropTypes.func.isRequired,
+	auth: PropTypes.object.isRequired,
+};
+
+const mapState = state => ({
+	auth: state.auth,
+});
+
+export default connect(mapState, { logoutUser })(Header);
