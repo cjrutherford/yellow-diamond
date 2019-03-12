@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from "react";
 
 import { Input, Form, FormGroup, Label, Button } from 'reactstrap';
-import {connect} from 'react-redux';
-import {registerUser} from '../actions/auth';
+import { connect } from 'react-redux';
+import { registerUser } from '../actions/auth';
 
 class Register extends Component {
-	constructor(props){
+	constructor(props) {
 		super(props);
 		this.state = {
 			firstName: '',
@@ -26,7 +26,7 @@ class Register extends Component {
 	onChange(e) {
 		e.preventDefault();
 		this.setState({
-			[e.target.name]:e.target.value,
+			[e.target.name]: e.target.value,
 		});
 	}
 
@@ -38,7 +38,7 @@ class Register extends Component {
 			middleInitial: '',
 			userName: '',
 			gender: '',
-			email: '',
+			emailAddress: '',
 			birthDate: new Date('01/01/1990'),
 			password: '',
 			password2: '',
@@ -47,106 +47,111 @@ class Register extends Component {
 
 	onSubmit(e) {
 		e.preventDefault();
-		const user = {...this.state};
+		const user = { ...this.state };
+		console.log(user);
 		this.props.registerUser(user, this.props.history);
 	}
 
 	render() {
 		return (
-			<div> 
+			<div>
 				<h1 className="hotpink centerIt"> Registration</h1>
-			 	<div id="regForm">
-			 		<Form className="hotpink centerBlock formRegWidth">
-					 	<FormGroup>
-			 			<Label for='firstName'>First Name:</Label>
-			 			<Input
-			 				className="formRegStyle"
-			 				type="textbox"
-			 				name="firstName"
-							 required
-							 onChange={this.onChange}
-			 			/>
-						 </FormGroup>
-						 <FormGroup>
-			 			<Label for='lastName'> Last Name:</Label>
-			 			<Input
-			 				type="textbox"
-			 				className="formRegStyle"
-			 				name="lastName"
-							 required
-							 onChange={this.onChange}
-			 			/>
-						 </FormGroup>
-						 <FormGroup>
-			 			<Label for='middleInitial'>Middle Initial:</Label>
-			 			<Input
-			 				type="textbox"
-			 				className="formRegStyle"
-			 				maxLength="1"
-							 size="1"
-							 name='middleInitial'
-							 onChange={this.onChange}
-			 			/>
-						 </FormGroup>
-						 <FormGroup>
-			 			<Label for='gender'>Gender:</Label>
-			 			<Input className="formRegStyle" type="textbox" name="gender" onChange={this.onChange}/>
-						 </FormGroup>
-						 <FormGroup>
-			 			<Label for='birthDate'>Birthdate:</Label>
-			 			<Input type="date" name='birthDate' className="formRegStyle" required onChange={this.onChange}/>
-						 </FormGroup>
-						 <FormGroup>
-							 <Label for='userName'>User Name:</Label>
-							 <Input
-								 className='formRegStyle'
-								 type='textbox'
-								 required
-								 onChange={this.onChange}
-								 />
-						 </FormGroup>
-						 <FormGroup>
-			 			<Label for='email'>Email:</Label>
-			 			<Input
-			 				className="formRegStyle"
-			 				type="textbox"
-			 				name="email"
-			 				required
-							 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-							 onChange={this.onChange}
-			 			/>
-						 </FormGroup>
-						 <FormGroup>
-			 			<Label for='password'>Password:</Label>
-			 			<Input
-			 				className="formRegStyle"
-			 				type="password"
-			 				name="password"
-			 				pattern="?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-							 required
-							 onChange={this.onChange}
-			 			/>
-						 </FormGroup>
-						 <FormGroup>
-			 			<Label for='password2'> Confirm Password:</Label>
-			 			<Input
-			 				className="formRegStyle"
-			 				type="password"
-			 				name="password2"
-							 required
-							 onChange={this.onChange}
-			 			/>
-						 </FormGroup>
-			 			<div className="txtCenter" style={{display: 'flex', flexDirection: 'row'}}>
-			 				<Button className="formRegButton" onClick={this.onSubmit}>Submit</Button>
-			 				<Button className="formRegButton" onClick={this.onReset}>Reset</Button>
-			 			</div>
-			 		</Form>
-			 	</div>
-			 </div>
+				<div id="regForm">
+					<Form className="hotpink centerBlock formRegWidth">
+						<FormGroup>
+							<Label for='firstName'>First Name:</Label>
+							<Input
+								className="formRegStyle"
+								type="textbox"
+								name="firstName"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='lastName'> Last Name:</Label>
+							<Input
+								type="textbox"
+								className="formRegStyle"
+								name="lastName"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='middleInitial'>Middle Initial:</Label>
+							<Input
+								type="textbox"
+								className="formRegStyle"
+								maxLength="1"
+								size="1"
+								name='middleInitial'
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup></FormGroup>
+						<FormGroup>
+							<Label for='gender'>Gender:</Label>
+							<Input className="formRegStyle" type="textbox" name="gender" onChange={this.onChange} />
+						</FormGroup>
+						<FormGroup>
+							<Label for='birthDate'>Birthdate:</Label>
+							<Input type="date" name='birthDate' className="formRegStyle" required onChange={this.onChange} />
+						</FormGroup>
+						<FormGroup></FormGroup><FormGroup></FormGroup>
+						<FormGroup>
+							<Label for='userName'>User Name:</Label>
+							<Input
+								className='formRegStyle'
+								type='textbox'
+								name='userName'
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='emailAddress'>Email:</Label>
+							<Input
+								className="formRegStyle"
+								type="textbox"
+								name="emailAddress"
+								required
+								pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup></FormGroup><FormGroup></FormGroup>
+						<FormGroup>
+							<Label for='password'>Password:</Label>
+							<Input
+								className="formRegStyle"
+								type="password"
+								name="password"
+								pattern="?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='password2'> Confirm Password:</Label>
+							<Input
+								className="formRegStyle"
+								type="password"
+								name="password2"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup><FormGroup></FormGroup>
+						<div className="txtCenter" style={{ display: 'flex', flexDirection: 'row' }}>
+							<Button className="formRegButton" onClick={this.onSubmit}>Submit</Button>
+							<Button className="formRegButton" onClick={this.onReset}>Reset</Button>
+						</div>
+					</Form>
+				</div>
+			</div>
 		);
 	}
 }
 
 const mapState = state => ({});
-export default connect(mapState, {registerUser})(Register);
+export default connect(mapState, { registerUser })(Register);

@@ -4,7 +4,7 @@ const UserSchema = new Schema({
 	firstName: String,
 	middleInitial: String,
 	lastName: String,
-	phoneNumber: String,
+	// phoneNumber: String,
 	emailAddress: {
 		type: String,
 		required: true,
@@ -19,6 +19,8 @@ const UserSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	gender: String,
+	birthDate:{type: Date, default: Date.now()},
 	authAdmin: Boolean,
 });
 
