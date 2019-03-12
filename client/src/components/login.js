@@ -11,6 +11,9 @@ class Login extends Component {
 			login: '',
 			password: '',
 		};
+		this.styles ={
+
+		};
 		this.onChange = this.onChange.bind(this);
 	}
 

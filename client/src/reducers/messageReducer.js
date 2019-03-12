@@ -20,14 +20,14 @@ export default (state = initState, { type, payload }) => {
 			...state,
 			messages: state.messages.push(payload),
 		};
-	case ACK_MESSAGE:
-		return {
-			...state,
-			messages: () => {
-				return state.messages.map((content, i) => {
-				if (content.id === payload.id) return content.ack = !content.ack;
-			})},
-		};
+	// case ACK_MESSAGE:
+	// 	return {
+	// 		...state,
+	// 		messages: () => {
+	// 			return state.messages.map((content, i) => {
+	// 			if (content.id === payload.id) return content.ack = !content.ack;
+	// 		})},
+	// 	};
 	default:
 		return state;
 	}
