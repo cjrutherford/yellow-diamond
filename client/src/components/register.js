@@ -56,8 +56,8 @@ class Register extends Component {
 		return (
 			<div>
 				<h1 className="hotpink centerIt"> Registration</h1>
-				<div id="regForm">
-					<Form className="hotpink centerBlock formRegWidth">
+				<div id="regForm" className="d-block d-lg-none">
+					<Form className="hotpink centerBlock  ">
 						<FormGroup>
 							<Label for='firstName'>First Name:</Label>
 							<Input
@@ -89,7 +89,6 @@ class Register extends Component {
 								onChange={this.onChange}
 							/>
 						</FormGroup>
-						<FormGroup></FormGroup>
 						<FormGroup>
 							<Label for='gender'>Gender:</Label>
 							<Input className="formRegStyle" type="textbox" name="gender" onChange={this.onChange} />
@@ -98,7 +97,6 @@ class Register extends Component {
 							<Label for='birthDate'>Birthdate:</Label>
 							<Input type="date" name='birthDate' className="formRegStyle" required onChange={this.onChange} />
 						</FormGroup>
-						<FormGroup></FormGroup><FormGroup></FormGroup>
 						<FormGroup>
 							<Label for='userName'>User Name:</Label>
 							<Input
@@ -120,7 +118,7 @@ class Register extends Component {
 								onChange={this.onChange}
 							/>
 						</FormGroup>
-						<FormGroup></FormGroup><FormGroup></FormGroup>
+
 						<FormGroup>
 							<Label for='password'>Password:</Label>
 							<Input
@@ -142,7 +140,98 @@ class Register extends Component {
 								onChange={this.onChange}
 							/>
 						</FormGroup><FormGroup></FormGroup>
-						<div className="txtCenter" style={{ display: 'flex', flexDirection: 'row' }}>
+						<div className="txtCenter RegistrationButtonPlace" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent:'space-around' }}>
+							<Button className="formRegButton" onClick={this.onSubmit}>Submit</Button>
+							<Button className="formRegButton" onClick={this.onReset}>Reset</Button>
+						</div>
+					</Form>
+				</div>
+
+				<div id="regForm" className="d-none d-lg-block">
+					<Form className="hotpink centerBlock  formRegWidth">
+						<FormGroup>
+							<Label for='firstName'>First Name:</Label>
+							<Input
+								className="formRegStyle"
+								type="textbox"
+								name="firstName"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='lastName'> Last Name:</Label>
+							<Input
+								type="textbox"
+								className="formRegStyle"
+								name="lastName"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='middleInitial'>Middle Initial:</Label>
+							<Input
+								type="textbox"
+								className="formRegStyle"
+								maxLength="1"
+								size="1"
+								name='middleInitial'
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='gender'>Gender:</Label>
+							<Input className="formRegStyle" type="textbox" name="gender" onChange={this.onChange} />
+						</FormGroup>
+						<FormGroup>
+							<Label for='birthDate'>Birthdate:</Label>
+							<Input type="date" name='birthDate' className="formRegStyle" required onChange={this.onChange} />
+						</FormGroup>
+						<FormGroup>
+							<Label for='userName'>User Name:</Label>
+							<Input
+								className='formRegStyle'
+								type='textbox'
+								name='userName'
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='emailAddress'>Email:</Label>
+							<Input
+								className="formRegStyle"
+								type="textbox"
+								name="emailAddress"
+								required
+								pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+
+						<FormGroup>
+							<Label for='password'>Password:</Label>
+							<Input
+								className="formRegStyle"
+								type="password"
+								name="password"
+								pattern="?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Label for='password2'> Confirm Password:</Label>
+							<Input
+								className="formRegStyle"
+								type="password"
+								name="password2"
+								required
+								onChange={this.onChange}
+							/>
+						</FormGroup><FormGroup></FormGroup>
+						<div className="txtCenter RegistrationButtonPlace" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent:'space-around' }}>
 							<Button className="formRegButton" onClick={this.onSubmit}>Submit</Button>
 							<Button className="formRegButton" onClick={this.onReset}>Reset</Button>
 						</div>

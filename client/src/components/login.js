@@ -31,10 +31,29 @@ class Login extends Component {
 					<h1 className="hotpink centerIt">Garnet Labs </h1>
 				</div>
 				<h2 className="hotpink centerIt ">Login</h2>
-				<div className="loginForm">
+				<div className="loginForm d-none d-lg-block">
 					<Form id="loginPage">
 						<div className="loginBox ">
+							<FormGroup  style={{dislpay: 'flex', flexDirection: 'row'}}>
+								<Label for="login">Username:</Label>
+								<Input type="text" name="login" onChange={this.onChange} />
+							</FormGroup>
 							<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
+								<Label>Password:</Label>
+								<Input type="password" name="password" onChange={this.onChange} />
+							</FormGroup>
+						</div>
+						<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
+							<Button className="loginButtons">Submit</Button>
+							<Button className="loginButtons">Forgot Password</Button>
+						</FormGroup>
+					</Form>
+				</div>
+
+				<div className=" loginSmall d-block d-lg-none">
+					<Form id="loginPage">
+						<div className="loginBox ">
+							<FormGroup  style={{dislpay: 'flex', flexDirection: 'row'}}>
 								<Label for="login">Username:</Label>
 								<Input type="text" name="login" onChange={this.onChange} />
 							</FormGroup>
