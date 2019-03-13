@@ -8,13 +8,11 @@ class Login extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			login: '',
+			userName: '',
 			password: '',
 		};
-		this.styles ={
-
-		};
 		this.onChange = this.onChange.bind(this);
+		this.onSubmit = this.onSubmit.bind(this);
 	}
 
 	onChange(e) {
@@ -24,6 +22,14 @@ class Login extends Component {
 		});
 	}
 
+	onSubmit(e) {
+		e.preventDefault();
+		const login = {
+			...this.state,
+		};
+		this.props.loginUser(login);
+	}
+
 	render() {
 		return (
 			<React.Fragment>
@@ -31,12 +37,12 @@ class Login extends Component {
 					<h1 className="hotpink centerIt">Garnet Labs </h1>
 				</div>
 				<h2 className="hotpink centerIt ">Login</h2>
-				<div className="loginForm d-none d-lg-block">
+				<div className="loginForm">
 					<Form id="loginPage">
 						<div className="loginBox ">
-							<FormGroup  style={{dislpay: 'flex', flexDirection: 'row'}}>
-								<Label for="login">Username:</Label>
-								<Input type="text" name="login" onChange={this.onChange} />
+							<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
+								<Label for="userName">Username:</Label>
+								<Input type="text" name="userName" onChange={this.onChange} />
 							</FormGroup>
 							<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
 								<Label>Password:</Label>
@@ -44,26 +50,7 @@ class Login extends Component {
 							</FormGroup>
 						</div>
 						<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
-							<Button className="loginButtons">Submit</Button>
-							<Button className="loginButtons">Forgot Password</Button>
-						</FormGroup>
-					</Form>
-				</div>
-
-				<div className=" loginSmall d-block d-lg-none">
-					<Form id="loginPage">
-						<div className="loginBox ">
-							<FormGroup  style={{dislpay: 'flex', flexDirection: 'row'}}>
-								<Label for="login">Username:</Label>
-								<Input type="text" name="login" onChange={this.onChange} />
-							</FormGroup>
-							<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
-								<Label>Password:</Label>
-								<Input type="password" name="password" onChange={this.onChange} />
-							</FormGroup>
-						</div>
-						<FormGroup style={{dislpay: 'flex', flexDirection: 'row'}}>
-							<Button className="loginButtons">Submit</Button>
+							<Button className="loginButtons" onClick={this.onSubmit}>Submit</Button>
 							<Button className="loginButtons">Forgot Password</Button>
 						</FormGroup>
 					</Form>

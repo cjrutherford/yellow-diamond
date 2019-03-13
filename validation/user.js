@@ -36,13 +36,10 @@ module.exports = {
   },
   loginUser: data => {
     let errors = {};
-    data.emailAddress = !isEmpty(data.emailAddress) ? data.emailAddress : "";
+    data.userName = !isEmpty(data.userName) ? data.userName : "";
     data.password = !isEmpty(data.password) ? data.password : "";
-    if (validator.isEmpty(data.emailAddress)) {
-      errors.emailAddress = "Email Field is Required";
-    }
-    if (!validator.isEmail(data.emailAddress)) {
-      errors.emailAddress = "Email is invalid.";
+    if (validator.isEmpty(data.userName)) {
+      errors.userName = "UserName Field is Required";
     }
     if (validator.isEmpty(data.password)) {
       errors.password = "Password Field is Required";

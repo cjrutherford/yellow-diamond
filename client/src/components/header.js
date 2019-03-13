@@ -83,7 +83,7 @@ class Header extends Component {
 					<Link to="/users">Manage Users</Link>
 				</NavItem>
 				<NavItem>
-					<Button clasName='nav-link' onClick={this.onLogoutClick}>LogOut {user.userName}</Button>
+					<Button className='nav-link' onClick={this.onLogoutClick}>LogOut {user.userName}</Button>
 				</NavItem>
 			</Fragment>
 		);
