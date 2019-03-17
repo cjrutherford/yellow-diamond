@@ -55,6 +55,19 @@ module.exports = (secret, public) => {
 	});
 
 	/**
+	 * Route to add a user to an application
+	 * 
+	 */
+
+	 router.post('/addUser/:appId/:userId', (req,res) => {
+		 const appId = req.params.appId;
+		 const userId = req.params.userId;
+		 Application.findById(appId).then(a => {
+			 
+		 })
+	 })
+
+	/**
 	 * Route to temporarily ban a user
 	 * this will default to banning a user for one month
 	 */
