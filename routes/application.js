@@ -1,11 +1,14 @@
 const router = require('express').Router();
 const A = require('../models/application');
 const { Application, AppToken } = require('../models/application');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const log = require('../logger');
 require('dotenv').config();
 const secret = process.env.SECRET || '$3r10uslyCh@ng3Th1$!';
 const uniq = require('uniqid');
+
+const moment = require('moment');
 
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
@@ -50,6 +53,54 @@ module.exports = (secret, public) => {
 			}
 		}).catch(err => res.status(500).json({error: err, message: 'issue with finding application in database.'}));
 	});
+
+	/**
+	 * Route to temporarily ban a user
+	 * this will default to banning a user for one month
+	 */
+
+	 router.post('/tempBan/:appId/:userId', (req,res) => {
+		 const appId = req.params.appId;
+		 const userId = req.params.userId;
+		 const banTime = moment.add(30, 'days').fromNow();
+		 Application.findById(appId).then(app => {
+			 if(!app) res.status(500).json({error: 'internal Server Error', message: 'Issue with Retrieving application from database.'});
+			 User.findById(userId).then(user => {
+				 if(!app) res.status(500).json({error: 'Internal Server Error', message: 'Issue retrieving user from database.'});
+				 const banned = {
+					 expires: banTime,
+					 user,
+				 };
+				 app.tempBannedUsers.push(banned);
+				 app.save.then(app => {
+					if(!app) res.status(500).json({message: 'Internal Server Error', message: 'Issue saving application record to database.'});
+					res.json({message: 'user successfully banned.'});
+				 }).catch(err => res.status(500).json(err));
+			 }).catch(err => res.status(500).json(err));
+		 }).catch(err => res.status(500).json(err));
+	 });
+
+	 /**
+	  * Route to permanently ban a user
+	  * this will not be able to be removed.
+	  */
+
+	  router.post('/permBan/:appId/:userId', (req,res) => {
+		  const appId = req.params.appId;
+		  const userId = req.params.userId;
+		  Application.findById(appId).then(app => {
+			  if(!app) res.status(500).json({error: 'Internal Server Error', message: 'Issue locating application in database'});
+			  User.findById(userId).then(user => {
+				  if(!user) res.status(500).json({error: 'Internal Server Error', message: 'Issue locating user in database.'});
+				  app.permBannedUsers.push(user);
+				  app.save().then(app => res.json({message: 'Successfully banned user permenantly'}));
+			  }).catch(err => res.status(500).json(err));
+		  }).catch(err => res.status(500).json(err));
+	  });
+
+	  router.get('/bans/:appId/:userId', (req,res) => {
+
+	  });
 	
 	//route to login an application
 	//tested working

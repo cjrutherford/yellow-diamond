@@ -5,7 +5,9 @@ const ApplicationSchema = new Schema({
 	appName: { type: String, required: true },
 	appOwner: { type: Schema.Types.ObjectId, required: true },
 	users: [{type: Schema.Types.ObjectId, ref: 'User'}],
-	revokedTokens: [{ type: Schema.Types.ObjectId, ref: 'AppToken' }],
+	ownerDelegates: [{type: Schema.Types.ObjectId, ref: 'User'}],
+	permBannedUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
+	tempBannedUsers: [{expires: {type: Date, required: true}, user: {type:Schema.Types.ObjectId, ref: 'User'}}]
 });
 
 const AppTokenSchema = new Schema({
