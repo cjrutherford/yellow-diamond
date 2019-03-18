@@ -4,6 +4,8 @@ const ApplicationSchema = new Schema({
 	appPass: { type: String, required: true },
 	appName: { type: String, required: true },
 	appOwner: { type: Schema.Types.ObjectId, required: true },
+	appIcon: {type: String, default: 'http://placehold.it/300x300'},
+	appBanner: {type: String, default: 'http://placehold.it/1024x600'},
 	users: [{type: Schema.Types.ObjectId, ref: 'User'}],
 	ownerDelegates: [{type: Schema.Types.ObjectId, ref: 'User'}],
 	permBannedUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],

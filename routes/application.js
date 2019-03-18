@@ -18,6 +18,13 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (secret, public) => {
 
+	router.get('/guest/list', (req,res) => {
+		Application.find({},{appPass: -1}).then(apps => {
+			if(!apps) res.status(400).json({message: 'no apps currently in the database.'});
+			res.json(apps);
+		}).catch(err => res.status(500).json(err));
+	});
+
 	//ROUTE FOR CREATING NEW APPLICATION.
 	//tested working, and documented in postman
 	router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {

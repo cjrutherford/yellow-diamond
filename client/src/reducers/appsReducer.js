@@ -1,18 +1,17 @@
-import {SET_CURRENT_USER} from '../actions/types';
+import {SET_APP_LIST} from '../actions/types';
 
 import isEmpty from '../utils/is-empty';
 
 const initState = {
-    
+    appList: [],
 };
 
 export default (state = initState, {type, payload}) => {
     switch(type){
-        case SET_CURRENT_USER:
+        case SET_APP_LIST:
             return{
                 ...state,
-                user: payload,
-                isAuthenticated: !isEmpty(payload)
+                appList: payload,
             }
         default: 
             return state;
