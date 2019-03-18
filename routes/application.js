@@ -8,6 +8,8 @@ require('dotenv').config();
 const secret = process.env.SECRET || '$3r10uslyCh@ng3Th1$!';
 const uniq = require('uniqid');
 
+const isAppOwner = require('../middleware/isAppOwner');
+
 const moment = require('moment');
 
 const passport = require('passport');
@@ -59,20 +61,24 @@ module.exports = (secret, public) => {
 	 * 
 	 */
 
-	 router.post('/addUser/:appId/:userId', (req,res) => {
+	 router.post('/addUser/:appId/:userId', passport.authenticate('jwt', {session: false}), (req,res) => {
 		 const appId = req.params.appId;
 		 const userId = req.params.userId;
-		 Application.findById(appId).then(a => {
-			 
-		 })
-	 })
+		 Application.findById(appId).then(app => {
+			 if(!app) res.status(500).json({message: 'issue locating app to add user to.'});
+			 app.users.push(userId).save().then(a => {
+				 if(!a) res.status(500).json({message: 'issue saving app to database after user push.'});
+				 res.json(a);
+			 }).catch(err => res.status(500).json(err));
+		 }).catch(err => res.status(500).json(err));
+	 });
 
 	/**
 	 * Route to temporarily ban a user
 	 * this will default to banning a user for one month
 	 */
 
-	 router.post('/tempBan/:appId/:userId', (req,res) => {
+	 router.post('/tempBan/:appId/:userId', passport.authenticate('jwt', {session: false}), isAppOwner, (req,res) => {
 		 const appId = req.params.appId;
 		 const userId = req.params.userId;
 		 const banTime = moment.add(30, 'days').fromNow();
@@ -98,7 +104,7 @@ module.exports = (secret, public) => {
 	  * this will not be able to be removed.
 	  */
 
-	  router.post('/permBan/:appId/:userId', (req,res) => {
+	  router.post('/permBan/:appId/:userId', passport.authenticate('jwt', {session: false}), isAppOwner, (req,res) => {
 		  const appId = req.params.appId;
 		  const userId = req.params.userId;
 		  Application.findById(appId).then(app => {
@@ -112,7 +118,19 @@ module.exports = (secret, public) => {
 	  });
 
 	  router.get('/bans/:appId/:userId', (req,res) => {
-
+		  const appId = req.params.appId;
+		  const userId = req.params.userId;
+		  Applicaiton.findById(appId).then(app => {
+			  if(!app) res.status(500).json({message: 'Issue finding App In database.'});
+			  if(app.tempBannedUsers.indexOf(userId) !== -1){
+				  const banInfo = app.tempBannedUsers.filter(u => u.user === userId);
+				  res.json({notBanned: false, tempBanInfo: banInfo, message: `user is temporarily banned. Ban Expires: ${banInfo.expires}`});
+			  } else if(app.permBannedUsers.indexOf(userId)) {
+				res.json({notBanned: false, message: 'User is Permanently Banned. No Appeals.'});
+			  } else {
+				  res.json({notBanned: true, message: 'User is not banned.'});
+			  }
+		  }).catch(err => res.status(500).json(err));
 	  });
 	
 	//route to login an application
@@ -167,7 +185,7 @@ module.exports = (secret, public) => {
 	//tested working correctly
 	//documented in postman
 	router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
-		Application.find({appOwner: req.user.id}, {appPass: 0}).then(apps => {
+		Application.find({appOwner: req.user.id}, {appPass: -1}).then(apps => {
 			if(!apps) res.status(404).json({error: 'No Apps from this user Found'});
 			res.json(apps);
 		}).catch(err => res.status(500).json({error: err, message: 'issue finding apps in the database.'}));

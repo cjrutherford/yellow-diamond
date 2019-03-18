@@ -19,6 +19,7 @@ const UserSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	apps: [{type: Schema.Types.ObjectId, ref: 'Applicaiton'}],
 	gender: String,
 	birthDate:{type: Date, default: Date.now()},
 	authAdmin: Boolean,

@@ -7,6 +7,8 @@ const secret = process.env.SECRET || 'thisneedstob3ch@ng3D';
 const KeyPair = require('../models/keyPair');
 const ResetLink = require('../models/resetLink');
 
+const isAuthAdmin = require('../middleware/isAuthAdmin');
+
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
@@ -177,6 +179,31 @@ module.exports = private => {
 				}
 			});
 		});
+	});
+
+	router.get('/all', passport.authenticate('jwt', {session: false}), isAuthAdmin, (req, res) => {
+		Users.find({}, {password: -1}).then(users => {
+			if(!users) res.status(400).json({message: 'Seems to be no users in the database.'});
+			res.json(users);
+		}).catch(err => res.status(500).json(err));
+	});
+
+	router.patch('/admin/grant/:userId', passport.authenticate('jwt', {session: false}), isAuthAdmin, (req, res) => {
+		const userId = req.params.userId;
+		User.findById(userId).then(u => {
+			if(!u) res.status(400).json({message: 'user not found in database.'});
+			u.authAdmin = true;
+			u.save().then(adminUser => res.json(adminUser)).catch(err => res.status(500).json(err));
+		}).catch(err => res.status(500).json(err));
+	});
+
+	router.patch('/admin/revoke/:userId', passport.authenticate('jwt', {session: false}), isAuthAdmin, (req,res) => {
+		const userId = req.params.userId;
+		User.findById(userId).then(user => {
+			if(!user) res.status(400).json({message: 'user not found in database'});
+			user.authAdmin = false;
+			user.save().then(u => res.json(u)).catch(err => res.status(500).json(err));
+		}).catch(err => res.status(500).json(err));
 	});
 
 	router.get(
