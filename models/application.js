@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const ApplicationSchema = new Schema({
 	appPass: { type: String, required: true },
 	appName: { type: String, required: true },
-	appOwner: { type: Schema.Types.ObjectId, required: true },
+	appOwner: { type: Schema.Types.ObjectId,ref: 'User', required: true },
 	appDescription: String,
 	appIcon: {type: String, default: 'http://placehold.it/300x300'},
 	appBanner: {type: String, default: 'http://placehold.it/1024x600'},

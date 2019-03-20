@@ -10,6 +10,11 @@
 	color: #dc304b;
 }
 
+#root > div.app > div.jumbotron.carousel.slide > div > div.carousel-item.active{
+	background: rgba(24, 23, 23, 0.8);
+	width: 90vw;
+}
+
 .centerIt {
 	margin-top: 40px;
 	text-align: center;

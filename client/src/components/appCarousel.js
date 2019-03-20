@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 
 import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { getApps } from '../actions/app';
 
 import {
     Carousel,
@@ -13,12 +16,28 @@ import {
 class AppCarousel extends Component{
     constructor(props){
         super(props);
-        this.state = {activeIndex: 0};
+        this.state = {
+            activeIndex: 0,
+            guestList: []
+        };
         this.next = this.next.bind(this);
         this.previous = this.previous.bind(this);
         this.goToIndex = this.goToIndex.bind(this);
         this.onExiting = this.onExiting.bind(this);
         this.onExited = this.onExited.bind(this);
+    }
+
+    componentDidMount(){
+        this.props.getApps();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps);
+        if(nextProps.guestList){
+            this.setState({
+                guestList: nextProps.guestList
+            });
+        }
     }
 
     onExiting() {
@@ -31,13 +50,13 @@ class AppCarousel extends Component{
 
     next() {
         if(this.animating) return;
-        const nextIndex = this.state.activeIndex === this.props.items.length - 1 ? 0 : this.state.activeIndex + 1;
+        const nextIndex = this.state.activeIndex === this.state.guestList.length - 1 ? 0 : this.state.activeIndex + 1;
         this.setState({activeIndex: nextIndex}); 
     }
 
     previous(){
         if(this.animating) return;
-        const nextIndex = this.state.activeIndex === this.props.items.length -1 ? 0 : this.state.activeIndex + 1;
+        const nextIndex = this.state.activeIndex === this.state.guestList.length -1 ? 0 : this.state.activeIndex + 1;
         this.setState({activeIndex: nextIndex});
     }
 
@@ -47,36 +66,87 @@ class AppCarousel extends Component{
     }
 
     render(){
+        // console.dir(this.props);
         const {activeIndex} = this.state;
-        const slides = this.props.items.map(i => {
+        let slides = [];
+        if(this.state.guestList){
+            slides = this.state.guestList.map(i => {
+                return(
+                    <CarouselItem
+                        onExiting={this.onExiting}
+                        onExited={this.onExited}
+                        key={this.state.guestList.indexOf(i)}
+                        cssModule={{
+                            backgroundImage:`url("${i.appBanner}")`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center center',
+                            width: '90vw',
+                            height: '20vw'
+                        }}
+                        >
+                        <div
+                        style={{
+                            backgroundImage:`url('${i.appBanner}')`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center center',
+                            padding: '1em',
+                            height: '100%',
+                            width: '100%',
+                        }}
+                        >
+                        <img src={i.appIcon} alt={i.appIconAlt} />
+                        </div>
+                        <CarouselCaption captionHeader={i.appName} captionText={i.appDescription}
+                        style={{
+                            background: 'rgba(33,33,33,0.9)',
+                            boxShadow: '2px 2px 2px 2px rgba(33,33,33,0.8)',
+                            color: 'black'
+                        }}/>    
+                    </CarouselItem>
+                )
+            });
             return(
-                <CarouselItem
-                    onExiting={this.onExiting}
-                    onExited={this.onExited}
-                    key={this.props.items.indexOf(i)}>
+                <Carousel
+                    activeIndex={activeIndex}
+                    next={this.next}
+                    previous={this.previous}
+                    className='jumbotron'
+                    style={{
+                        width: '90vw',
+                        marginLeft:'5wv',
+                        marginTop: '2vh',
+                        color: 'black',
+                    }}
+                    >
+    
+                    <CarouselIndicators items={this.state.guestList} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
+                    {slides}
+                    <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
+                    <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />    
+                </Carousel>
+            );
+        }else {
+            return(
+                <div className='jumbotron' style={{
+                    width: '90vw',
+                    marginLeft: '5vw',
+                    marginTop: '2vh'
+                }}>
+                    <h1>No Apps</h1>
+                </div>
+            );
+        }
+        
 
-                    <img src={i.appIcon} alt={i.appIconAlt} />
-                    <CarouselCaption captionHeader={i.appName} captionText={i.appDescription}/>    
-                </CarouselItem>
-            )
-        })
-        return(
-            <Carousel
-                activeIndex={activeIndex}
-                next={this.next}
-                previous={this.previous} >
-
-                <CarouselIndicators items={this.props.items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
-                {slides}
-                <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
-                <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />    
-            </Carousel>
-        );
     }
 }
 
+AppCarousel.propTypes = {
+    
+}
+
 const mapState = state => ({
-    items: state.appList
+    guestList: state.apps.guestList
 });
 
-export default connect(mapState, {})(AppCarousel);
+export default connect(mapState, {getApps})(AppCarousel);

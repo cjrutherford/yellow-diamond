@@ -9,3 +9,4 @@ export const ADD_APP = 'ADD_APP';
 export const REMOVE_USER = 'REMOVE_USER';
 export const REMOVE_APP = 'REMOVE_APP';
 export const GET_ERRORS = 'GET_ERRORS';
+export const SET_GUEST_APP_LIST = 'SET_GUEST_APP_LIST';

@@ -20,14 +20,11 @@ class AppList extends Component{
                 containerStyles:{
                     width: '90vw',
                     marginLeft: '5em',
+                    marginTop: '2em',
                     color: 'white',
                     display: 'flex',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
                 },
-                headerStyles:{
-                    borderBottom: '10px solid white',
-                    width: '90vw'
-                }
             }
         }
     }
@@ -38,7 +35,7 @@ class AppList extends Component{
         return(
             <Fragment>
                 <div style={this.state.styles.containerStyles}>
-                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottom: '5px solid white',}}>
                     <h1 style={this.state.styles.headerStyles}>Your Apps</h1><i className='fa fa-plus-circle'></i>
                     </div>
                     {appsList}

@@ -7,8 +7,9 @@ class Hero extends Component {
                 className="jumbotron"
                 style={
                     {
-                        backgroundImage: this.props.background,
+                        backgroundImage: `url("${this.props.background}")`,
                         width: '90vw',
+                        height: '25vh',
                         marginLeft: '5vw',
                         marginTop: '2vh',
                         display: 'flex',
