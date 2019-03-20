@@ -1,6 +1,10 @@
 import React, {Component, Fragment} from 'react';
 import App from './appComp.js';
 
+import EditForm from './editForm';
+
+import {Modal, ModalHeader, ModalBody} from 'reactstrap';
+
 
 class AppList extends Component{
     constructor(props){
@@ -25,12 +29,34 @@ class AppList extends Component{
                     display: 'flex',
                     flexDirection: 'column',
                 },
-            }
+            },
+            modal: false,
+            selectedApp: '',
         }
+        this.onButton = this.onButton.bind(this);
+        this.toggle = this.toggle.bind(this);
     }
+
+    onButton(id) {
+        //this function is to open the modal for the selected application.
+        //it would be preferable that this be an app update component that
+        // has the option to delete the application. This should trigger 
+        // an email to all users that use the app that it is going away.
+        this.setState({
+            modal: !this.state.modal,
+            selectedApp: id,
+        });
+    }
+    
+    toggle(){
+        this.setState({
+            modal: !this.state.modal,
+        });
+    }
+
     render(){
         const appsList = this.state.apps.map(a => {
-            return <App key={a.id} name={a.appName} users={a.users} owner={a.appOwner} admins={a.ownerDelegates} bans={a.bannedUsers} />
+            return <App key={a.id} id={a.id} name={a.appName} users={a.users} owner={a.appOwner} admins={a.ownerDelegates} bans={a.bannedUsers} onButton={this.onButton}/>
         })
         return(
             <Fragment>
@@ -40,6 +66,10 @@ class AppList extends Component{
                     </div>
                     {appsList}
                 </div>
+                <Modal isOpen={this.state.modal} >
+                    <ModalHeader toggle={this.toggle}>Manage Application</ModalHeader>
+                    <ModalBody><EditForm id={this.state.selectedApp}></EditForm></ModalBody>
+                </Modal>
             </Fragment>
         )
     }
