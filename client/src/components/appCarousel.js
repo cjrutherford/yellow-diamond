@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getApps } from '../actions/app';
+import { getGuestApps } from '../actions/app';
 
 import {
     Carousel,
@@ -28,7 +28,7 @@ class AppCarousel extends Component{
     }
 
     componentDidMount(){
-        this.props.getApps();
+        this.props.getGuestApps();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -149,4 +149,4 @@ const mapState = state => ({
     guestList: state.apps.guestList
 });
 
-export default connect(mapState, {getApps})(AppCarousel);
+export default connect(mapState, {getGuestApps})(AppCarousel);

@@ -1,27 +1,23 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import App from './appComp.js';
 
-import EditForm from './editForm';
+import AppEditForm from './appEditForm';
 
-import {Modal, ModalHeader, ModalBody} from 'reactstrap';
+import { getAppsList } from '../actions/app';
+
+import { connect } from 'react-redux';
 
 
-class AppList extends Component{
-    constructor(props){
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+
+
+class AppList extends Component {
+    constructor(props) {
         super(props);
         this.state = {
-            apps: [
-                {
-                    id: 1298745901,
-                    appName: 'Simple Test',
-                    users: ['132857','1938274591','1923875','193745913'],
-                    appOwner: '5c7efa437b97f557e0f47c25',
-                    ownerDelegates: [],
-                    bannedUsers: [],
-                }
-            ],
-            styles:{
-                containerStyles:{
+            apps: [],
+            styles: {
+                containerStyles: {
                     width: '90vw',
                     marginLeft: '5em',
                     marginTop: '2em',
@@ -37,6 +33,16 @@ class AppList extends Component{
         this.toggle = this.toggle.bind(this);
     }
 
+    componentDidMount() {
+        this.props.getAppsList();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            apps: nextProps.apps,
+        });
+    }
+
     onButton(id) {
         //this function is to open the modal for the selected application.
         //it would be preferable that this be an app update component that
@@ -47,32 +53,69 @@ class AppList extends Component{
             selectedApp: id,
         });
     }
-    
-    toggle(){
+
+    toggle() {
         this.setState({
             modal: !this.state.modal,
         });
     }
 
-    render(){
-        const appsList = this.state.apps.map(a => {
-            return <App key={a.id} id={a.id} name={a.appName} users={a.users} owner={a.appOwner} admins={a.ownerDelegates} bans={a.bannedUsers} onButton={this.onButton}/>
-        })
-        return(
+    render() {
+        let appsList;
+        if (typeof this.state.apps !== 'undefined') {
+            appsList = this.state.apps.map(a => {
+                return <App
+                    key={a.id}
+                    id={a.id}
+                    banner={a.appBanner}
+                    icon={a.appIcon}
+                    name={a.appName}
+                    description={a.appDescription}
+                    users={a.users}
+                    owner={a.appOwner}
+                    admins={a.ownerDelegates}
+                    bans={a.permBannedUsers + a.tempBannedUsers}
+                    onButton={this.onButton} />
+            });
+        } else {
+            appsList = <div style={this.state.styles.headerStyles}><h1>Sorry No Apps. :(</h1></div>
+        }
+        return (
             <Fragment>
                 <div style={this.state.styles.containerStyles}>
-                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottom: '5px solid white',}}>
-                    <h1 style={this.state.styles.headerStyles}>Your Apps</h1><i className='fa fa-plus-circle'></i>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottom: '5px solid white', }}>
+                        <h1 style={this.state.styles.headerStyles}>Your Apps</h1><i className='fa fa-plus-circle'></i>
                     </div>
                     {appsList}
                 </div>
-                <Modal isOpen={this.state.modal} >
-                    <ModalHeader toggle={this.toggle}>Manage Application</ModalHeader>
-                    <ModalBody><EditForm id={this.state.selectedApp}></EditForm></ModalBody>
+                <Modal isOpen={this.state.modal} size='lg' style={{
+
+                }}>
+                    <ModalHeader style={{
+                        background: 'black',
+                        borderSize: '2px',
+                        borderStyle: 'solid',
+                        borderColor: '#dc304b',
+                        borderRadius: '5px',
+                        color: '#dc304b',
+                    }} toggle={this.toggle}>Manage Application</ModalHeader>
+                    <ModalBody style={{
+                        background: 'black',
+                        borderSize: '2px',
+                        borderStyle: 'solid',
+                        borderColor: '#dc304b',
+                        borderRadius: '5px',
+                        color: '#dc304b',
+                    }}
+                    ><AppEditForm id={this.state.selectedApp}></AppEditForm></ModalBody>
                 </Modal>
             </Fragment>
         )
     }
 }
 
-export default AppList;
+const mapState = state => ({
+    apps: state.apps.appList,
+});
+
+export default connect(mapState, { getAppsList })(AppList);

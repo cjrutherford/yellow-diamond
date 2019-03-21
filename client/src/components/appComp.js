@@ -3,7 +3,7 @@ import {Card, CardTitle, CardBody, Button} from 'reactstrap';
 
 class App extends Component{
     render(){
-        const {id, name, users, owner, admins, bans, icon, onButton} = this.props;
+        const {id, name, users, owner, admins, bans, icon,banner, onButton} = this.props;
         const metaStyle = {
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
@@ -12,7 +12,7 @@ class App extends Component{
         const headerStyle = {
             boxShadow: '2px 2px 4px 4px rgba(88,88,88,0.6)',
             margin: '0.5em',
-            padding: '1.5em',
+            padding: '0.5em',
             textAlign: 'center'
         }
 
@@ -30,7 +30,16 @@ class App extends Component{
                     style={{
                         fontSize: '4em'
                     }}
-                >{icon ? <image src={icon} alt='icon'></image>: ''}{name}</CardTitle>
+                >
+                    <div style={{
+                        background: `url(${banner})`, 
+                        backgroundSize: 'cover', 
+                        backgroundPosition: 'center center'
+                        }}>
+                        {icon ? <image src={icon} alt='icon' className='img-thumbnail' width='5vw'/>: ''}
+                        <span style={{background: 'rgba(88,88,88,0.3)', padding: '0.5em'}}>{name}</span>
+                    </div>
+                </CardTitle>
                 <CardBody style={metaStyle}>
                     <h4 style={headerStyle}>Users: {users.length}</h4>
                     <h4 style={headerStyle}>Owner: {owner}</h4>
