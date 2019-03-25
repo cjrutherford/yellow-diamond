@@ -10,12 +10,13 @@ export const registerUser = (userData, history) => (dispatch) => {
     }));
 };
 
-export const loginUser = userData => dispatch => {
+export const loginUser = (userData, history) => dispatch => {
     axios.post('http://localhost:3201/users/login', userData).then(res => {
         const {token} = res.data;
         localStorage.setItem("yellowDiamondToken", token);
         setAuthToken(token);
         const decoded = jwt_decode(token);
+        history.push('/');
         dispatch(setCurrentUser(decoded));
     }).catch(err => {
         dispatch({

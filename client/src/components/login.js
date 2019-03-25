@@ -27,7 +27,8 @@ class Login extends Component {
 		const login = {
 			...this.state,
 		};
-		this.props.loginUser(login);
+		this.props.loginUser(login, this.props.history);
+
 	}
 
 	render() {
