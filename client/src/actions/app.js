@@ -1,4 +1,4 @@
-import { SET_GUEST_APP_LIST, SET_APP_LIST, GET_ERRORS } from './types';
+import { SET_GUEST_APP_LIST, SET_APP_LIST, GET_ERRORS, APPLICATION_UPDATED, APP_SELECTED } from './types';
 import axios from 'axios';
 
 export const getGuestApps = () => dispatch => {
@@ -28,4 +28,32 @@ export const getAppsList = () => dispatch => {
         });
     });
 
+}
+
+export const selectApplication = id => dispatch => {
+    axios.get(`http://localhost:3201/application/${id}`).then(res => {
+        dispatch({
+            type: APP_SELECTED,
+            payload: res.data,
+        });
+    }).catch(err => {
+        dispatch({
+            type: GET_ERRORS,
+            payload: err
+        });
+    });
+}
+
+export const updateApplication = appData => dispatch => {
+    axios.patch(`http://localhost:3201/application/${appData.id}`, appData).then(res => {
+        dispatch({
+            type: APPLICATION_UPDATED,
+            payload: res.data,
+        });
+    }).catch(err => {
+        dispatch({
+            type: GET_ERRORS,
+            payload: err
+        });
+    });
 }

@@ -10,3 +10,5 @@ export const REMOVE_USER = 'REMOVE_USER';
 export const REMOVE_APP = 'REMOVE_APP';
 export const GET_ERRORS = 'GET_ERRORS';
 export const SET_GUEST_APP_LIST = 'SET_GUEST_APP_LIST';
+export const APPLICATION_UPDATED = 'APPLICATION_UPDATED';
+export const APP_SELECTED = 'APP_SELECTED';

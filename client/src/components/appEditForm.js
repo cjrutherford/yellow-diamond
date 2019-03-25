@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 
 import {Form, Input, InputGroup, Label, Button} from 'reactstrap';
+import { connect } from 'react-redux';
+
+import {updateApplication, selectApplication} from '../actions/app';
 
 class AppEditForm extends Component{
 
@@ -11,12 +14,22 @@ class AppEditForm extends Component{
             appDescription: '',
             redirectURL: '',
             appBanner: '',
-            appIcon: ''
+            appIcon: '',
         }
 
         this.onChange = this.onChange.bind(this);
         this.resetForm = this.resetForm.bind(this);
         this.submitForm = this.submitForm.bind(this);
+    }
+
+    componentDidMount(){
+      this.props.selectApplication(this.props.id);
+    }
+
+    componentWillReceiveProps(nextProps, state){
+      this.setState({
+        ...state, ...nextProps.app
+      });
     }
 
     onChange(e) {
@@ -95,4 +108,8 @@ class AppEditForm extends Component{
     }
 }
 
-export default AppEditForm;
+const mapState = state => ({
+  app: state.apps.selectedApp,
+});
+
+export default connect(mapState, {updateApplication, selectApplication})(AppEditForm);

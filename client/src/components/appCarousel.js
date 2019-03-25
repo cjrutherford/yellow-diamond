@@ -94,7 +94,7 @@ class AppCarousel extends Component{
                             width: '100%',
                         }}
                         >
-                        <img src={i.appIcon} alt={i.appIconAlt} />
+                        <img src={i.appIcon} alt={i.appIconAlt} style={{width: '10wv', height: '10vh'}} />
                         </div>
                         <CarouselCaption captionHeader={i.appName} captionText={i.appDescription}
                         style={{

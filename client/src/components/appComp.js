@@ -3,6 +3,7 @@ import {Card, CardTitle, CardBody, Button} from 'reactstrap';
 
 class App extends Component{
     render(){
+        console.log(this.props);
         const {id, name, users, owner, admins, bans, icon,banner, onButton} = this.props;
         const metaStyle = {
             display: 'grid',
@@ -17,7 +18,7 @@ class App extends Component{
         }
 
         const editMe = () => {
-            onButton(id);
+            onButton(this.props.app._id);
         }
 
         return(

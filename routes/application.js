@@ -144,6 +144,24 @@ module.exports = (secret, public) => {
 		}).catch(err => res.status(500).json(err));
 	});
 
+	router.get('/:applicationId', passport.authenticate('jwt', {session: false}), isAppOwner, (req,res) => {
+		const appId = req.params.applicationId;
+		Application.findById(appId).then(app => {
+			res.json(app);
+		}).catch(err => res.status(500).json(err));
+	});
+
+	router.patch('/:applicationId', passport.authenticate('jwt', {session: false}),isAppOwner, (req,res) => {
+		const appId = req.params;
+		const appUpdate = req.body;
+		Application.findById(appId).then(app => {
+			app = Object.assign({}, appUpdate, app);
+			app.save().then(app => {
+				res.json(app);
+			}).catch(err => res.status(500).json(err));
+		}).catch(err => res.status(500).json(err));
+	});
+
 	//route to login an application
 	//tested working
 	//documented in postman

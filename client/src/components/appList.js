@@ -3,7 +3,7 @@ import App from './appComp.js';
 
 import AppEditForm from './appEditForm';
 
-import { getAppsList } from '../actions/app';
+import { getAppsList, selectApplication } from '../actions/app';
 
 import { connect } from 'react-redux';
 
@@ -50,8 +50,8 @@ class AppList extends Component {
         // an email to all users that use the app that it is going away.
         this.setState({
             modal: !this.state.modal,
-            selectedApp: id,
         });
+        this.props.selectApplication(id);
     }
 
     toggle() {
@@ -66,6 +66,7 @@ class AppList extends Component {
             appsList = this.state.apps.map(a => {
                 return <App
                     key={a.id}
+                    app={a}
                     id={a.id}
                     banner={a.appBanner}
                     icon={a.appIcon}
@@ -107,7 +108,7 @@ class AppList extends Component {
                         borderRadius: '5px',
                         color: '#dc304b',
                     }}
-                    ><AppEditForm id={this.state.selectedApp}></AppEditForm></ModalBody>
+                    ><AppEditForm></AppEditForm></ModalBody>
                 </Modal>
             </Fragment>
         )
@@ -118,4 +119,4 @@ const mapState = state => ({
     apps: state.apps.appList,
 });
 
-export default connect(mapState, { getAppsList })(AppList);
+export default connect(mapState, { getAppsList, selectApplication })(AppList);
