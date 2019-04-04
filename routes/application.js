@@ -285,7 +285,7 @@ module.exports = (secret, public) => {
               banInfo.expires
             }`,
           });
-        } else if (app.permBannedUsers.indexOf(userId)) {
+        } else if (app.permBannedUsers.indexOf(userId) !== -1) {
           res.json({
             notBanned: false,
             message: 'User is Permanently Banned. No Appeals.',
@@ -303,25 +303,25 @@ module.exports = (secret, public) => {
     isAppOwner,
   );
 
-  router.patch(
-    '/:applicationId',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-      const appId = req.params;
-      const appUpdate = req.body;
-      Application.findById(appId)
-        .then(app => {
-          app = Object.assign({}, appUpdate, app);
-          app
-            .save()
-            .then(app => {
-              res.json(app);
-            })
-            .catch(err => res.status(500).json(err));
-        })
-        .catch(err => res.status(500).json(err));
-    },
-  );
+  // router.patch(
+  //   '/:applicationId',
+  //   passport.authenticate('jwt', { session: false }),
+  //   (req, res) => {
+  //     const appId = req.params;
+  //     const appUpdate = req.body;
+  //     Application.findById(appId)
+  //       .then(app => {
+  //         app = Object.assign({}, appUpdate, app);
+  //         app
+  //           .save()
+  //           .then(app => {
+  //             res.json(app);
+  //           })
+  //           .catch(err => res.status(500).json(err));
+  //       })
+  //       .catch(err => res.status(500).json(err));
+  //   },
+  // );
 
   router.get(
     '/:applicationId',
