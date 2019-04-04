@@ -21,7 +21,30 @@ module.exports = (secret, public) => {
   router.patch(
     '/:appId',
     passport.authenticate('jwt', { session: false }),
-    (req, res) => {},
+    (req, res) => {
+      const appId = req.params.appId;
+      Application.findById(appId)
+        .then(app => {
+          if (!app)
+            res
+              .status(400)
+              .json({ message: 'unable to find applicaton in database.' });
+          app = { ...app, app: req.body };
+          app
+            .save()
+            .then(savedApp => res.json(savedApp))
+            .catch(err =>
+              res
+                .status(500)
+                .json({ message: 'issue saving app to database.' }),
+            );
+        })
+        .catch(err =>
+          res
+            .status(500)
+            .json({ message: 'issue retrieving app from database.' }),
+        );
+    },
   );
 
   //route to delete an application
@@ -29,7 +52,21 @@ module.exports = (secret, public) => {
   router.delete(
     '/:appId',
     passport.authenticate('jwt', { session: false }),
-    (req, res) => {},
+    (req, res) => {
+      const appId = req.params.appId;
+      Application.findById(appId)
+        .then(app => {
+          if (!app)
+            res
+              .status(404)
+              .json({ message: 'unable to find app in database.' });
+          app
+            .remove()
+            .then(() => res.json('app removed successfully.'))
+            .catch(err => res.status(500).json(err));
+        })
+        .catch(err => res.status(500).json(err));
+    },
   );
 
   router.get('/guest/list', (req, res) => {
