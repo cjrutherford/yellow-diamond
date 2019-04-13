@@ -1,8 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import YellowDiamond from '../assets/Yellow Diamond.gif';
+import YellowDiamond from '../assets/WhiteDiamond.png';
 import { connect } from 'react-redux';
 import { logoutUser } from '../actions/auth';
 import {PropTypes} from 'prop-types';
+
+import Blob from '../assets/blob2.png';
 
 import { Link } from 'react-router-dom';
 import {
@@ -20,7 +22,7 @@ class Header extends Component {
 		super(props);
 		this.state = {
 			headerBG: {
-				backgroundImage: 'url("blob.gif")',
+				backgroundImage: `url("${Blob}")`,
 				width: '100vw',
 				height: '10vh',
 				backgroundPosition: 'center center',
@@ -29,7 +31,7 @@ class Header extends Component {
 				padding: '0',
 			},
 			headerFilter: {
-				background: 'rgba(100, 100, 100, 0.8)',
+				background: 'rgba(100, 100, 100, 0.2)',
 				width: '100vw',
 				height: '10vh',
 				display: 'flex',
@@ -76,11 +78,11 @@ class Header extends Component {
 		const { user, isAuthenticated } = this.props.auth;
 		const guestLinks = (
 			<Fragment>
-				<NavItem>
-					<Link to="/apps">Manage Apps</Link>
+				<NavItem className="navMenu">
+					<Link className="navMenu" to="/apps">Manage Apps</Link>
 				</NavItem>
 				<NavItem>
-					<Link to="/users">Manage Users</Link>
+					<Link className="navMenu" to="/users">Manage Users</Link>
 				</NavItem>
 				<NavItem>
 					<Button className='nav-link' onClick={this.onLogoutClick}>LogOut {user.userName}</Button>
@@ -89,24 +91,24 @@ class Header extends Component {
 		);
 		const authLinks = (
 			<Fragment>
-				<NavItem>
-					<Link to='/login'>Login</Link>
+				<NavItem >
+					<Link className="navMenu" to='/login'>Login</Link>
 				</NavItem>
 				<NavItem>
-					<Link to="/register">Register</Link>
+					<Link className="navMenu" to="/register">Register</Link>
 				</NavItem>
 				<NavItem>
-					<Link to="/reset">Recover Account</Link>
+					<Link className="navMenu" to="/reset">Recover Account</Link>
 				</NavItem>
 			</Fragment>
 		)
 		return (
 			<Navbar style={this.state.headerBG}>
 				<div style={this.state.headerFilter}>
-					<NavbarToggler onClick={this.toggle}>
+					<NavbarToggler className="navBarToggler" onClick={this.toggle}>
 						<i className="fa fa-bars" />
 					</NavbarToggler>
-					<NavbarBrand href="/">
+					<NavbarBrand className="navBarToggler" href="/">
 						<img
 							src={YellowDiamond}
 							style={this.state.logoStyle}

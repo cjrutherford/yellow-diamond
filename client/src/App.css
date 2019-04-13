@@ -7,7 +7,7 @@
 }
 
 .hotpink {
-	color: #dc304b;
+	color:#069DBF;
 }
 
 #root > div.app > div.jumbotron.carousel.slide > div > div.carousel-item.active{
@@ -57,8 +57,8 @@
 } */
 
 .loginForm {
-	border-top: 10px solid #dc304b;
-	border-bottom: 10px solid #dc304b;
+	border-top: 10px solid #0F3240;
+	border-bottom: 10px solid #0F3240;
 	width: 30vw;
 	height: 30%;
 	padding: 100px;
@@ -69,7 +69,7 @@
 	z-index: 1;
 
 	/*   border-bottom-right-radius: 20px; */
-	color: #dc304b;
+	color: #069DBF;
 }
 /* .loginForm::after {
   border-top: 15px solid red;
@@ -113,9 +113,9 @@
 
 .loginButtons {
 	background-color: #1c1919 !important;
-	border-color: #dc304b !important;
+	border-color: #069DBF !important;
 	border-radius: 4px;
-	color: #dc304b !important ;
+	color:#069DBF !important ;
 	box-shadow: none;
 }
 
@@ -133,7 +133,7 @@
 	margin-right: auto;
 	border-style: double;
 	border-width: 12px;
-	border-color: #dc304b;
+	border-color: #0F3240;
 	border-radius: 15px;
 	width: 60%;
 	padding: 40px;
@@ -141,11 +141,11 @@
 
 .formRegStyle {
 	background-color: #1c1919;
-	border-bottom: solid 2px #dc304b;
-	border-top: solid 2px #dc304b;
+	border-bottom: solid 2px #069DBF;
+	border-top: solid 2px #069DBF;
 	border-left: none;
 	border-right: none;
-	color: #dc304b;
+	color: #069DBF;
 	width: 80%;
 }
 .formRegStyle:focus {
@@ -154,8 +154,8 @@
 
 .formRegButton {
 	background-color: #1c1919 !important;
-	color: #dc304b !important;
-	border: 2px solid #dc304b !important;
+	color: #069DBF !important;
+	border: 2px solid #069DBF !important;
 	border-radius: 5px;
 	margin-left: 0.5em;
 	margin-right: 0.5em;
@@ -188,4 +188,65 @@
 
 #resetPassEmail {
 	font-size: 10pt;
+}
+
+.navMenu {
+	display: flex; 
+	flex-direction: column; 
+	justify-content: flex-end;
+	color: white; 
+	margin-left: 2rem;
+	margin-top: 1rem;
+	font-weight: 500;
+
+}
+
+.navBarToggler {
+	margin-bottom: 1rem ;
+}
+
+.buttonStyle{
+	background-color: white ;
+	border-radius: 100% ;
+	color: #069DBF; 
+	border: solid white 2px; 
+}
+
+.YourAppsButton{
+	background-color: rgba(15,50,64, .6) !important; 
+	margin-top: 1em; 
+	border: solid 3px rgba(206,245,253,0.6) !important; 
+}
+
+.UserInfo {
+	 
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-gap: 1em ;
+	justify-content: space-between;
+	
+}
+.UserBox {
+	margin-top: 2em ;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #1c1919 !important;
+}
+
+.UserTitle {
+	text-align: center;
+	margin-top: 1em;  
+	color: white;
+	font-size: 15pt; 
+}
+
+.UserButtons {
+	margin-right: 1em ;
+}
+
+.UserListBorder {
+	padding-bottom: 10px; 
+	border-bottom:#069DBF solid 5px;
+	
 }

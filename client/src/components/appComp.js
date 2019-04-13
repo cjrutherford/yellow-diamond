@@ -22,7 +22,8 @@ class App extends Component {
       gridSpacing: '2em',
     };
     const headerStyle = {
-      boxShadow: '2px 2px 4px 4px rgba(88,88,88,0.6)',
+      boxShadow: '2px 2px 4px 4px rgba(206,245,253,0.6)',
+      //border: 'solid 4 white' , 
       margin: '0.5em',
       padding: '0.5em',
       textAlign: 'center',
@@ -38,7 +39,9 @@ class App extends Component {
         style={{
           marginTop: '2em',
           padding: '1.5em',
-          background: 'rgba(33,33,33,0.8)',
+          background: 'rgba(6,157,191,0.8)',
+          //background: 'rgba(28,25,25,0.8)',
+          
         }}>
         <CardTitle
           style={{
@@ -61,7 +64,7 @@ class App extends Component {
               ''
             )}
             <span
-              style={{ background: 'rgba(88,88,88,0.3)', padding: '0.5em' }}>
+              style={{ background: 'rgba(15,50,64, 0.8)', padding: '0.5em', borderRadius: '0 0 .2em .2em' }}>
               {name}
             </span>
           </div>
@@ -74,7 +77,7 @@ class App extends Component {
           <span />
           <span />
           <span />
-          <Button onClick={editMe}>Manage</Button>
+          <Button className="YourAppsButton" onClick={editMe}>Manage</Button>
         </CardBody>
       </Card>
     );

@@ -23,6 +23,9 @@ class AppList extends Component {
           display: 'flex',
           flexDirection: 'column',
         },
+        headerStyles:{
+          color:"#069DBF",
+        },
       },
       modal: false,
       selectedApp: '',
@@ -99,7 +102,7 @@ class AppList extends Component {
               borderBottom: '5px solid white',
             }}>
             <h1 style={this.state.styles.headerStyles}>Your Apps</h1>
-            <i className="fa fa-plus-circle" />
+            <i className="fa fa-plus-circle buttonStyle" />
           </div>
           {appsList}
         </div>
