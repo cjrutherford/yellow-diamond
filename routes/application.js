@@ -16,6 +16,66 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
 module.exports = (secret, public) => {
+  //route to login an application
+  //tested working
+  //documented in postman
+  router.post('/login', (req, res) => {
+    const { errors, isValid } = require('../validation/application').loginApp(
+      req.body,
+    );
+    if (!isValid) return res.status(400).json(errors);
+
+    Application.findOne({ appName: req.body.appName })
+      .then(app => {
+        if (!app) {
+          errors.appName = 'Application does not exist in this context.';
+          return res.status(400).json(errors);
+        } else {
+          /**
+           * 1. Check if the app password and has compares.
+           * 2. if Y create token and return to application.
+           * 3. if N return errors to the client.
+           */
+          bcrypt.compare(req.body.appPass, app.appPass).then(isMatch => {
+            if (isMatch) {
+              const payload = {
+                id: app.id,
+                name: app.appName,
+                owner: app.appOwner,
+              };
+              jwt.sign(
+                payload,
+                secret,
+                {
+                  expiresIn: '30d',
+                  issuer: 'Garnet Labs, DBA',
+                },
+                (err, token) => {
+                  if (err)
+                    res
+                      .status(500)
+                      .json({ error: err, message: 'Issue signing token' });
+                  res.json({ success: true, token: `Bearer ${token}` });
+                },
+              );
+            } else {
+              errors.password = 'Password is incorrect';
+              res.status(400).json(errors);
+            }
+          });
+        }
+      })
+      .catch(err => res.status(400).json(err));
+  });
+
+  router.get(
+    '/key',
+    passport.authenticate('app-jwt', { session: false }),
+    (req, res) => {
+      res.json({ key: public });
+    },
+  );
+
   //ROUTE For Updating an APPLICATION
 
   router.patch(
@@ -333,66 +393,6 @@ module.exports = (secret, public) => {
           res.json(app);
         })
         .catch(err => res.status(500).json(err));
-    },
-  );
-
-  //route to login an application
-  //tested working
-  //documented in postman
-  router.post('/login', (req, res) => {
-    const { errors, isValid } = require('../validation/application').loginApp(
-      req.body,
-    );
-    if (!isValid) return res.status(400).json(errors);
-
-    Application.findOne({ appName: req.body.appName })
-      .then(app => {
-        if (!app) {
-          errors.appName = 'Application does not exist in this context.';
-          return res.status(400).json(errors);
-        } else {
-          /**
-           * 1. Check if the app password and has compares.
-           * 2. if Y create token and return to application.
-           * 3. if N return errors to the client.
-           */
-          bcrypt.compare(req.body.appPass, app.appPass).then(isMatch => {
-            if (isMatch) {
-              const payload = {
-                id: app.id,
-                name: app.appName,
-                owner: app.appOwner,
-              };
-              jwt.sign(
-                payload,
-                secret,
-                {
-                  expiresIn: '30d',
-                  issuer: 'Garnet Labs, DBA',
-                },
-                (err, token) => {
-                  if (err)
-                    res
-                      .status(500)
-                      .json({ error: err, message: 'Issue signing token' });
-                  res.json({ success: true, token: `Bearer ${token}` });
-                },
-              );
-            } else {
-              errors.password = 'Password is incorrect';
-              res.status(400).json(errors);
-            }
-          });
-        }
-      })
-      .catch(err => res.status(400).json(err));
-  });
-
-  router.get(
-    '/key',
-    passport.authenticate('app-jwt', { session: false }),
-    (req, res) => {
-      res.json({ key: public });
     },
   );
 
