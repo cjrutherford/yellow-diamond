@@ -12,6 +12,7 @@
     "dev": "concurrently \"nodemon index.js\" \"PORT=2000 npm run client\"",
     "dev-debug": "concurrently \"nodemon --inspect index.js\" \" yarn run client\" ",
     "client:build": "cd client && yarn build",
+    "dev:back":"nodemon index.js",
     "start": "node index.js",
     "client-install": "yarn install --prefix client"
   },
